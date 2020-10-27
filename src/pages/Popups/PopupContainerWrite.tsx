@@ -1,11 +1,11 @@
 import React from "react";
 
-const PopupContentsWrite : React.FunctionComponent = () => {
+const PopupContainerWrite : React.FunctionComponent = () => {
   return (
-    <div className="popup-content write-popup">
+    <div className="popup-container write-popup">
       Write
     </div>
   )
 }
 
-export default PopupContentsWrite;
+export default PopupContainerWrite;

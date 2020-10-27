@@ -2,7 +2,7 @@ import React from "react";
 
 const PopupContainerAttach : React.FunctionComponent = () => {
   return (
-    <div className="popup-content attach-popup">
+    <div className="popup-container attach-popup">
       Attach
     </div>
   )

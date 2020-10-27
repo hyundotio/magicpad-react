@@ -2,7 +2,7 @@ import React from "react";
 
 const PopupContainerKeys : React.FunctionComponent = () => {
   return (
-    <div className="popup-content read-popup">
+    <div className="popup-container read-popup">
       Keys
     </div>
   )
