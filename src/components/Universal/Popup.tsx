@@ -3,14 +3,14 @@ import { createPortal } from "react-dom";
 
 interface Props {
   closePopup: Function;
-  title: String;
-  visible: Boolean;
+  title: string;
+  visible: boolean;
 }
 
 class Popup extends React.Component<Props> {
   public render() {
     const popupRootEl = document.getElementById('popup-root');
-    if(popupRootEl && this.props.visible) {
+    if(popupRootEl && this.props.closePopup && this.props.visible) {
       return createPortal(
         <div className="popup-container">
           <div className="popup">

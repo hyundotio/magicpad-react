@@ -1,10 +1,8 @@
 import React, {useState} from "react";
 import Popup from "../components/Universal/Popup";
+import PopupContainerWrite from "./Popups/PopupContainerWrite";
 
-interface Props {
-}
-
-const PageWrite : React.FunctionComponent<Props> = (props: Props) => {
+const PageWrite : React.FunctionComponent = () => {
   const [signMessage, setSignMessage] = useState('');
   const [popupVisible, setPopupVisibility] = useState(false);
 
@@ -16,11 +14,11 @@ const PageWrite : React.FunctionComponent<Props> = (props: Props) => {
         <button onClick={() => setPopupVisibility(true)}>Open Popup</button>
       </div>
       <Popup
-        closePopup={() => setPopupVisibility(false)}
-        visible={popupVisible}
-        title="Popup for write header"
+       title={"Write popup"}
+       visible={popupVisible}
+       closePopup={() => setPopupVisibility(false)}
       >
-        Popup for Write Content
+        <PopupContainerWrite />
       </Popup>
     </>
   )
