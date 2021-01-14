@@ -1,0 +1,7 @@
+export enum KEYSPOPUPTYPES {
+    PASTE,
+    NEWKEYS,
+    CONVERT,
+    BROWSE_SEARCH,
+    BROWSE_UPLOAD
+}

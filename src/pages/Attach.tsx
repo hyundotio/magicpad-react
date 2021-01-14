@@ -4,12 +4,12 @@ import PopupContainerAttach from "./Popups/PopupContainerAttach";
 
 const PageAttach : React.FunctionComponent = () => {
   const [popupVisible, setPopupVisibility] = useState(false);
-  
+
   return (
     <>
       <div className="page-content attach-page">
         Attach
-        <button onClick={() => setPopupVisibility(true)}>Open Popup</button>
+        <button onClick={() => setPopupVisibility(true)}>Open processed attachment</button>
       </div>
       <Popup
        title={"Attach popup"}

@@ -11,7 +11,7 @@ const PageWrite : React.FunctionComponent = () => {
       <div className="page-content">
         Write
         <input type="checkbox" />
-        <button onClick={() => setPopupVisibility(true)}>Open Popup</button>
+        <button onClick={() => setPopupVisibility(true)}>Open encrypted content</button>
       </div>
       <Popup
        title={"Write popup"}

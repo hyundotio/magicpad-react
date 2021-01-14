@@ -9,7 +9,7 @@ const PageWrite : React.FunctionComponent = () => {
     <>
       <div className="page-content">
         Read
-        <button onClick={() => setPopupVisibility(true)}>Open Popup</button>
+        <button onClick={() => setPopupVisibility(true)}>Open decrypted content</button>
       </div>
       <Popup
        title={"Read popup"}
