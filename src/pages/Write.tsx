@@ -27,7 +27,7 @@ const PageWrite : React.FunctionComponent = () => {
           passwordValue.length === 0 || textareaValue.length === 0 :
           textareaValue.length === 0
         }>Encrypt</button>
-        <button onClick={() => setPopupVisibility(true)}>Open encrypted content</button>
+        <button disabled={true} onClick={() => setPopupVisibility(true)}>Open encrypted content</button>
       </div>
       <Popup
        title={"Write popup"}

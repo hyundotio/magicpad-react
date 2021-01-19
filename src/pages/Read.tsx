@@ -16,7 +16,7 @@ const PageWrite : React.FunctionComponent = () => {
         <PasswordInput setPasswordValue={setPasswordValue} />
         <TextareaInput setTextareaValue={setTextareaValue} />
         <button disabled={passwordValue.length === 0 || textareaValue.length === 0}>Decrypt</button>
-        <button onClick={() => setPopupVisibility(true)}>Open decrypted content</button>
+        <button disabled={true} onClick={() => setPopupVisibility(true)}>Open decrypted content</button>
       </div>
       <Popup
        title={"Read popup"}
