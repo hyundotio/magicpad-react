@@ -7,10 +7,18 @@ const PageAttach : React.FunctionComponent = () => {
   const [popupVisible, setPopupVisibility] = useState(false);
   const [attachType, setAttachType] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
+  const [fileNameValue, setFileNameValue] = useState("");
 
   function handleOnClick(e: React.FormEvent<HTMLInputElement>){
     const input = e.target as HTMLInputElement;
     setAttachType(input.value);
+  }
+
+  const handleFileOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target as HTMLInputElement;
+    const file = input.files !== null && input.files[0];
+    file && setFileNameValue(file.name);
+    //file.name && setFileNameValue(file.name);
   }
 
   return (
@@ -21,14 +29,17 @@ const PageAttach : React.FunctionComponent = () => {
           Encrypt <input name="attach_type" type="radio" value="encrypt" onClick={handleOnClick} />
           Decrypt <input name="attach_type" type="radio" value="decrypt" onClick={handleOnClick} />
           {attachType === "decrypt" ? <PasswordInput setPasswordValue={setPasswordValue} /> : null}
+          <input type="file"
+                 onChange={handleFileOnChange}
+          />
         </form>
         {
           attachType.length ?
           <div className="attach-options">
             <button disabled={
               attachType === "decrypt" ?
-              passwordValue.length === 0 :
-              false
+              (fileNameValue.length === 0 || passwordValue.length === 0) :
+              fileNameValue.length === 0
             }>Process attachment</button>
             <button onClick={() => setPopupVisibility(true)}>Open processed attachment</button>
           </div> :

@@ -6,8 +6,6 @@ import PopupContainerKeys from "./Popups/PopupContainerKeys";
 const PageKeys : React.FunctionComponent = () => {
   const [popupVisible, setPopupVisibility] = useState(false);
   const [popupPage, setPopupPage] = useState(KEYSPOPUPTYPES.CONVERT);
-  const privKeyInputRef = React.useRef(null);
-  const pubKeyInputRef = React.useRef(null);
 
   function openPopupClick(popupPage: KEYSPOPUPTYPES){
     setPopupPage(popupPage);
@@ -28,7 +26,6 @@ const PageKeys : React.FunctionComponent = () => {
           <input accept=".asc,.png"
                  type="file"
                  onChange={handleOnChange}
-                 ref={pubKeyInputRef}
           />
           <input type="reset" defaultValue="Reset" />
         </form>
@@ -36,7 +33,6 @@ const PageKeys : React.FunctionComponent = () => {
           <input accept=".asc,.png"
                  type="file"
                  onChange={handleOnChange}
-                 ref={privKeyInputRef}
           />
           <input type="reset" defaultValue="Reset" />
         </form>
