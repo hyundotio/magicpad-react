@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import {ProcessedData} from "../../@types/ProcessedDataTypes";
 import PasswordInput from "../Universal/PasswordInput";
 import WebWorker from '../../webworker';
 
@@ -24,14 +25,15 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
     file && setFileReference(file);
   }
 
-  async function processDataAsync(data: ArrayBuffer | string){
+  async function processDataAsync(data: ProcessedData){
     const pgpWebWorker = new WebWorker();
-    let response: any;
+    let processedData: ProcessedData;
     if(attachType === 'encrypt'){
-      response = await pgpWebWorker.encryptAttachment(data, passwordValue);
+      processedData = await pgpWebWorker.encryptAttachment(data, passwordValue);
     } else {
-      response = await pgpWebWorker.decryptAttachment(data, passwordValue);
+      processedData = await pgpWebWorker.decryptAttachment(data, passwordValue);
     }
+    props.setProcessedContent(processedData);
     setProcessed(true);
     props.setPopupVisibility(true);
   }

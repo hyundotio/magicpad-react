@@ -1,7 +1,8 @@
 import React from "react";
+import {ProcessedData} from "../../@types/ProcessedDataTypes";
 
 interface Props {
-  processedContent: ArrayBuffer | string;
+  processedContent: ProcessedData;
 }
 
 const PopupContainerWrite : React.FunctionComponent<Props> = props => {
