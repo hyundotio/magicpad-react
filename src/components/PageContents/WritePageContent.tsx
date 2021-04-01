@@ -21,7 +21,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
   }
 
   async function handleEncrypt(){
-    const processedData = await pgpWebWorker.encryptData(textareaValue, passwordValue);
+    const processedData = await pgpWebWorker.encryptString(textareaValue, passwordValue, signMessage);
     if(processedData){
       props.setProcessedContent(processedData);
       setProcessed(true);

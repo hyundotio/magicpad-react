@@ -15,7 +15,7 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
   const pgpWebWorker = new WebWorker();
 
   async function handleDecrypt(){
-    const processedData = await pgpWebWorker.decryptData(textareaValue, passwordValue);
+    const processedData = await pgpWebWorker.decryptString(textareaValue, passwordValue);
     if(processedData){
       props.setProcessedContent(processedData);
       setProcessed(true);

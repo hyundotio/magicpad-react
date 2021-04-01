@@ -1,9 +1,9 @@
 import {ProcessedData} from "../@types/ProcessedDataTypes";
 
-export function encryptData(data: string, pw: string): string {
+export function encryptString(data: string, pw: string, sign: boolean): string {
   return data + ' encrypt';
 }
-export function decryptData(data: string, pw: string): string {
+export function decryptString(data: string, pw: string): string {
   return data + ' decrypt';
 }
 export function encryptAttachment(data: ProcessedData, pw: string): any {
