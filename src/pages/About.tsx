@@ -1,10 +1,9 @@
 import React from "react";
+import AboutPageContent from "../components/PageContents/AboutPageContent";
 
 const PageAbout : React.FunctionComponent = () => {
   return (
-    <div className="page-content about-page">
-      About
-    </div>
+    <AboutPageContent />
   )
 }
 

@@ -9,12 +9,10 @@ const PageAttach : React.FunctionComponent = () => {
 
   return (
     <>
-      <div className="page-content attach-page">
-        <AttachPageContent
-          setPopupVisibility={setPopupVisibility}
-          setProcessedContent={setProcessedContent}
-        />
-      </div>
+      <AttachPageContent
+        setPopupVisibility={setPopupVisibility}
+        setProcessedContent={setProcessedContent}
+      />
       <Popup
        title={"Attach popup"}
        visible={popupVisible}

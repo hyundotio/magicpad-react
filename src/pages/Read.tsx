@@ -11,12 +11,10 @@ const PageWrite : React.FunctionComponent = () => {
 
   return (
     <>
-      <div className="page-content">
-        <ReadPageContent
-          setPopupVisibility={setPopupVisibility}
-          setProcessedContent={setProcessedContent}
-        />
-      </div>
+      <ReadPageContent
+        setPopupVisibility={setPopupVisibility}
+        setProcessedContent={setProcessedContent}
+      />
       <Popup
        title={"Read popup"}
        visible={popupVisible}

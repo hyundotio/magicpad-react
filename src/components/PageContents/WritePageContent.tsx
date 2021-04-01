@@ -30,7 +30,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
   }
 
   return (
-    <>
+    <div className="page-content write-page">
         Write
         Sign message: <input type="checkbox" onClick={handleSignOnClick} />
         {signMessage ? <PasswordInput setPasswordValue={setPasswordValue} /> : null}
@@ -46,7 +46,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
           Encrypt
         </button>
         <button disabled={!processed} onClick={() => props.setPopupVisibility(true)}>Open encrypted content</button>
-    </>
+    </div>
   )
 }
 

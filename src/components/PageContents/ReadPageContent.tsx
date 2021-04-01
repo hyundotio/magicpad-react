@@ -24,7 +24,7 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
   }
 
   return (
-    <>
+    <div className="page-content read-page">
       Read
       <PasswordInput setPasswordValue={setPasswordValue} />
       <TextareaInput setTextareaValue={setTextareaValue} />
@@ -33,7 +33,7 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
         onClick={handleDecrypt}
       >Decrypt</button>
       <button disabled={!processed} onClick={() => props.setPopupVisibility(true)}>Open decrypted content</button>
-    </>
+    </div>
   )
 }
 

@@ -47,7 +47,7 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
   }
 
   return (
-    <>
+    <div className="page-content attach-page">
       Attach
       <form>
         Encrypt <input name="attach_type" type="radio" value="encrypt" onClick={handleAttachTypeOnClick} />
@@ -72,7 +72,7 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
         </div> :
         <div className="attach-init">Choose processing type above.</div>
       }
-    </>
+    </div>
   )
 }
 

@@ -8,15 +8,13 @@ import PopupContainerWrite from "./Popups/PopupContainerWrite";
 const PageWrite : React.FunctionComponent = () => {
   const [processedContent, setProcessedContent] = useState('');
   const [popupVisible, setPopupVisibility] = useState(false);
-  
+
   return (
     <>
-      <div className="page-content">
-        <WritePageContent
-          setPopupVisibility={setPopupVisibility}
-          setProcessedContent={setProcessedContent}
-        />
-      </div>
+      <WritePageContent
+        setPopupVisibility={setPopupVisibility}
+        setProcessedContent={setProcessedContent}
+      />
       <Popup
        title={"Write popup"}
        visible={popupVisible}
