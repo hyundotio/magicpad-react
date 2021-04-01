@@ -1,11 +1,15 @@
 import React from "react";
 
-import PopupContentsAttachProcess from "./Contents/Attach/Process";
+interface Props {
+  processedContent: ArrayBuffer | string;
+}
 
-const PopupContainerAttach : React.FunctionComponent = () => {
+const PopupContainerAttach : React.FunctionComponent<Props> = props => {
   return (
     <div className="popup-container attach-popup">
-      <PopupContentsAttachProcess />
+      <div className="popup-content read-process">
+        {props.processedContent}
+      </div>
     </div>
   )
 }

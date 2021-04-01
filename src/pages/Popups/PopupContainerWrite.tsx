@@ -1,11 +1,15 @@
 import React from "react";
 
-import PopupContentsWriteProcess from "./Contents/Write/Process";
+interface Props {
+  processedContent: ArrayBuffer | string;
+}
 
-const PopupContainerWrite : React.FunctionComponent = () => {
+const PopupContainerWrite : React.FunctionComponent<Props> = props => {
   return (
     <div className="popup-container write-popup">
-      <PopupContentsWriteProcess />
+      <div className="popup-content write-process">
+        {props.processedContent}
+      </div>
     </div>
   )
 }

@@ -6,7 +6,7 @@ interface Props {
 
 const PasswordInput : React.FunctionComponent<Props> = props => {
   const [showPassword, setShowPassword] = useState(false);
-  const [passwordFillState, setPasswordFillState] = useState(false);
+  //const [passwordFillState, setPasswordFillState] = useState(false);
 
   function handleOnClick(e: React.FormEvent<HTMLInputElement>) {
     const input = e.target as HTMLInputElement;
