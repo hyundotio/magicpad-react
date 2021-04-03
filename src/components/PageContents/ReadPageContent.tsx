@@ -1,7 +1,8 @@
 import React, {useState} from "react";
 import PasswordInput from "../Universal/PasswordInput";
 import TextareaInput from "../Universal/TextareaInput";
-import { decodeSteg, encodeSteg } from "../Steganography/Steg";
+import { decodeSteg } from "../Steganography/Steg";
+import { StegInput } from "../../@types/StegTypes";
 import WebWorker from '../../webworker';
 
 interface Props {
@@ -30,13 +31,13 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
     if(file !== null){
       const fileReader = new FileReader();
       fileReader.onloadend = function(e){
-        handleDecode(e.target?.result!);
+        e.target?.result! && handleDecode(e.target?.result!);
       }
       fileReader.readAsDataURL(file);
     }
   }
 
-  async function handleDecode(input: string | ArrayBuffer){
+  async function handleDecode(input: StegInput){
     const decodedMessage = await decodeSteg(input);
     console.log(decodedMessage);
   }

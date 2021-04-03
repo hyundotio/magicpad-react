@@ -2,6 +2,8 @@ import React, {useState} from "react";
 import PasswordInput from "../Universal/PasswordInput";
 import TextareaInput from "../Universal/TextareaInput";
 import WebWorker from '../../webworker';
+import { encodeSteg } from "../Steganography/Steg";
+import { StegInput } from "../../@types/StegTypes";
 
 interface Props {
   setPopupVisibility: Function;
@@ -12,6 +14,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
   const [signMessage, setSignMessage] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
   const [textareaValue, setTextareaValue] = useState("");
+  const [stegFile, setStegFile] = useState<Blob | undefined>(undefined);
   const [processed, setProcessed] = useState(false);
   const pgpWebWorker = new WebWorker();
 
@@ -25,12 +28,26 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
     if(processedData){
       props.setProcessedContent(processedData);
       setProcessed(true);
+      if(stegFile){
+        const fileReader = new FileReader();
+        fileReader.onloadend = function(e){
+          if(e.target?.result!) handleEncode(e.target?.result!);
+        }
+        fileReader.readAsDataURL(stegFile);
+      }
       props.setPopupVisibility(true);
     }
   }
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('loaded file!');
+    const input = e.target as HTMLInputElement;
+    const file = input.files && input.files[0];
+    if(file !== null) setStegFile(file);
+  }
+
+  async function handleEncode(input: StegInput){
+    const encodedSteg = await encodeSteg('encrypted text', input);
+    console.log(encodedSteg);
   }
 
   return (
