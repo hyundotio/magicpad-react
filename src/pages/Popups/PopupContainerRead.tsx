@@ -1,5 +1,5 @@
 import React from "react";
-import {ProcessedData} from "../../@types/ProcessedDataTypes";
+import { ProcessedData } from "../../@types/ProcessedDataTypes";
 
 interface Props {
   processedContent: ProcessedData;

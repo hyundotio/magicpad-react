@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import {ProcessedData} from "../../@types/ProcessedDataTypes";
+import React, { useState } from "react";
+import { ProcessedData } from "../../@types/ProcessedDataTypes";
 import PasswordInput from "../Universal/PasswordInput";
 import WebWorker from '../../webworker';
 

@@ -1,7 +1,7 @@
 import React from "react";
 
-import {TabSwitcher, TabHeader, TabContent} from "../../components/Universal/Tabs";
-import {KEYSPOPUPTYPES} from "../../@types/KeysPopupTypes";
+import { TabSwitcher, TabHeader, TabContent } from "../../components/Universal/Tabs";
+import { KEYSPOPUPTYPES } from "../../@types/KeysPopupTypes";
 
 import PopupContentsKeysBrowseSearch from "./Contents/Keys/BrowseSearch";
 import PopupContentsKeysBrowseUpload from "./Contents/Keys/BrowseUpload";

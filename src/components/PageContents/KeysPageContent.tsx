@@ -7,11 +7,11 @@ import PasswordInput from "../Universal/PasswordInput";
 import TextareaInput from "../Universal/TextareaInput";
 import WebWorker from '../../webworker';
 
-import {KEYSPOPUPTYPES} from "../../@types/KeysPopupTypes";
-import {Keys} from "../../@types/KeysTypes";
-import {loadPublicKey, loadPrivateKey} from "../../actions/SessionActions";
+import { KEYSPOPUPTYPES } from "../../@types/KeysPopupTypes";
+import { Keys } from "../../@types/KeysTypes";
+import { loadPublicKey, loadPrivateKey } from "../../actions/SessionActions";
 
-import {isPublicKey, isPrivateKey} from "../Cryptography/VerifyKeys";
+import { isPublicKey, isPrivateKey } from "../Cryptography/VerifyKeys";
 
 interface Props {
   loadPublicKey: typeof loadPublicKey;

@@ -1,6 +1,6 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 
-import {TabSwitcher, TabHeader, TabContent} from "../Universal/Tabs";
+import { TabSwitcher, TabHeader, TabContent } from "../Universal/Tabs";
 
 import GuideUsage from "./Guide/Usage";
 import GuideKeyManagement from "./Guide/KeyManagement";
