@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import PasswordInput from "../Universal/PasswordInput";
 import TextareaInput from "../Universal/TextareaInput";
+import { decodeSteg, encodeSteg } from "../Steganography/Steg";
 import WebWorker from '../../webworker';
 
 interface Props {
@@ -23,9 +24,27 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
     }
   }
 
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target as HTMLInputElement;
+    const file = input.files && input.files[0];
+    if(file !== null){
+      const fileReader = new FileReader();
+      fileReader.onloadend = function(e){
+        handleDecode(e.target?.result!);
+      }
+      fileReader.readAsDataURL(file);
+    }
+  }
+
+  async function handleDecode(input: string | ArrayBuffer){
+    const decodedMessage = await decodeSteg(input);
+    console.log(decodedMessage);
+  }
+
   return (
     <div className="page-content read-page">
       Read
+      Import steg: <input type="file" onChange={handleOnChange} />
       <PasswordInput setPasswordValue={setPasswordValue} />
       <TextareaInput setTextareaValue={setTextareaValue} />
       <button

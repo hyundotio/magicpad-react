@@ -1,4 +1,4 @@
-import {ProcessedData} from "../@types/ProcessedDataTypes";
+import { ProcessedData } from "../@types/ProcessedDataTypes";
 
 export function encryptString(data: string, pw: string, sign: boolean): string {
   return data + ' encrypt';
@@ -6,9 +6,9 @@ export function encryptString(data: string, pw: string, sign: boolean): string {
 export function decryptString(data: string, pw: string): string {
   return data + ' decrypt';
 }
-export function encryptAttachment(data: ProcessedData, pw: string): any {
-  return data;
+export function encryptAttachment(data: ProcessedData, pw: string): string {
+  return data && 'encrypted attachment';
 }
-export function decryptAttachment(data: ProcessedData, pw: string): any {
-  return data;
+export function decryptAttachment(data: ProcessedData, pw: string): string {
+  return data && 'decrypted attachment';
 }

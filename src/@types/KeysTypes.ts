@@ -1,24 +1,26 @@
 export interface Keys {
   publicKey: string;
   privateKey: string;
+  publicFingerprint: string;
+  privateFingerprint: string;
 }
 
 export enum KeysActionsTypes {
-  LOADKEYS = "KEYS/LOADKEYS",
-  SAVEKEYS = "KEYS/SAVEKEYS"
+  LOADPRIVATEKEY = "KEYS/LOADPRIVATEKEY",
+  LOADPUBLICKEY = "KEYS/LOADPUBLICKEY"
 }
 
-export interface LoadKeys {
-  type: KeysActionsTypes.LOADKEYS;
-  keys: Keys;
+export interface LoadPublicKey {
+  type: KeysActionsTypes.LOADPUBLICKEY;
+  publicKey: string;
 }
 
-export interface SaveKeys {
-  type: KeysActionsTypes.SAVEKEYS;
-  keys: Keys;
+export interface LoadPrivateKey {
+  type: KeysActionsTypes.LOADPRIVATEKEY;
+  privateKey: string;
 }
 
-export type KeysActions = LoadKeys | SaveKeys;
+export type KeysActions = LoadPublicKey | LoadPrivateKey;
 
 export interface KeysState {
   readonly keys: Keys;

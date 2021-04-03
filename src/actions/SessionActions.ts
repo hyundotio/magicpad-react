@@ -1,14 +1,17 @@
-import { SaveKeys, LoadKeys, Keys, KeysActionsTypes } from "../@types/KeysTypes";
+import { LoadPublicKey, LoadPrivateKey, Keys, KeysActionsTypes } from "../@types/KeysTypes";
 import { ActionCreator } from "redux";
 
-export const loadState: ActionCreator<LoadKeys> =
+/*export const loadState: ActionCreator<LoadKeys> =
   () => {
     const cookieContents = {
       publicKey: 'LOADED PUB KEY',
       privateKey: 'LOADED PRIV KEY'
     }
     return ({type: KeysActionsTypes.LOADKEYS, keys: {...cookieContents}})
-  }
+  }*/
 
-export const saveState: ActionCreator<SaveKeys> =
-  (keys: Keys) => ({type: KeysActionsTypes.SAVEKEYS, keys: keys})
+export const loadPublicKey: ActionCreator<LoadPublicKey> =
+  (publicKey: string) => ({type: KeysActionsTypes.LOADPUBLICKEY, publicKey: publicKey})
+
+export const loadPrivateKey: ActionCreator<LoadPrivateKey> =
+  (privateKey: string) => ({type: KeysActionsTypes.LOADPRIVATEKEY, privateKey: privateKey})

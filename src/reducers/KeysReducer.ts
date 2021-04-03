@@ -1,26 +1,28 @@
 import { Reducer } from "redux";
 import { Keys, KeysState, KeysActions, KeysActionsTypes } from "../@types/KeysTypes";
-import { saveState, loadState } from "../actions/SessionActions";
+import { loadPrivateKey, loadPublicKey } from "../actions/SessionActions";
 
 const InitialKeysState : KeysState = {
   keys: {
     publicKey: '',
-    privateKey: ''
+    privateKey: '',
+    publicFingerprint: '',
+    privateFingerprint: ''
   }
 }
 
 export const KeysReducer: Reducer <KeysState, KeysActions> =
              (state = InitialKeysState, action) => {
   switch(action.type) {
-    case KeysActionsTypes.SAVEKEYS: {
-      //const newState = {...state, keys: action};
-      //saveState(newState);
-      return state
+    case KeysActionsTypes.LOADPUBLICKEY: {
+      let newState = {...state};
+      newState.keys.publicKey = action.publicKey;
+      return newState
     }
-    case KeysActionsTypes.LOADKEYS: {
-      //const newState = loadState();
-      //console.log(newState);
-      return state
+    case KeysActionsTypes.LOADPRIVATEKEY: {
+      let newState = {...state};
+      newState.keys.privateKey = action.privateKey;
+      return newState;
     }
     default:
       return state

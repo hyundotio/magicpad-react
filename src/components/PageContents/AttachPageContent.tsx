@@ -14,7 +14,7 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
   const [fileReference, setFileReference] = useState<File | undefined>(undefined);
   const [processed, setProcessed] = useState(false);
 
-  function handleAttachTypeOnClick(e: React.FormEvent<HTMLInputElement>){
+  const handleAttachTypeOnClick = function(e: React.FormEvent<HTMLInputElement>){
     const input = e.target as HTMLInputElement;
     setAttachType(input.value);
   }
@@ -38,11 +38,15 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
     props.setPopupVisibility(true);
   }
 
-  function handleProcess() {
+ const handleProcess = function() {
     if(fileReference){
       const fileReader = new FileReader();
       fileReader.onloadend = (event) => event?.target!.result && processDataAsync(event.target.result);
-      fileReader.readAsText(fileReference);
+      if(attachType === 'encrypt'){
+        fileReader.readAsArrayBuffer(fileReference);
+      } else {
+        fileReader.readAsText(fileReference);
+      }
     }
   }
 

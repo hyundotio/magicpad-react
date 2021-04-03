@@ -6,11 +6,11 @@ import { KeysReducer } from "./reducers/KeysReducer";
 
 
 export interface ApplicationState {
-  keys: KeysState
+  userKeys: KeysState
 }
 
 const rootReducer = combineReducers<ApplicationState>({
-  keys: KeysReducer
+  userKeys: KeysReducer
 })
 
 export default function configureStore(): Store<ApplicationState> {

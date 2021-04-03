@@ -1,5 +1,7 @@
 declare module 'comlink-loader!*' {
-  import {ProcessedData} from "../@types/ProcessedDataTypes";
+  import { ProcessedData } from "../@types/ProcessedDataTypes";
+  import { StegInput } from "../@types/StegTypes";
+
   class WebpackWorker extends WebWorker {
     constructor();
     decryptString(data: string, pw: string): Promise<string>;
