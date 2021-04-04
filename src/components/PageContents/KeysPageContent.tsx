@@ -35,31 +35,48 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
     props.setPopupVisibility(true);
   }
 
+  async function handleStegDecode(input: StegInput, type: string){
+    const decodedKey = await decodeSteg(input);
+    handleKeyLoader(decodedKey, type);
+  }
+
+  const handleKeyLoader = function(key: string, type: string){
+    if(type === 'public'){
+      if(isPublicKey(key)){
+        props.loadPublicKey(key);
+      } else {
+        resetPublicKeyInput();
+      }
+    }
+    if(type === 'private'){
+      if(isPrivateKey(key)){
+        props.loadPrivateKey(key);
+      } else {
+        resetPrivateKeyInput();
+      }
+    }
+  }
+
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
-    const input = e.target as HTMLInputElement;
-    const file = input.files && input.files[0];
+    const file = e.target.files && e.target.files[0];
     if(file){
       const fileReader = new FileReader();
-      fileReader.onloadend = (e) => {
-        if(e.target?.result!){
-          const key = e.target?.result! as string;
-          if(type === 'public'){
-            if(isPublicKey(key)){
-              props.loadPublicKey(key);
-            } else {
-              resetPublicKeyInput();
-            }
-          }
-          if(type === 'private'){
-            if(isPrivateKey(key)){
-              props.loadPrivateKey(key);
-            } else {
-              resetPrivateKeyInput();
-            }
+      const extension = file.name.split('.').pop();
+      fileReader.onloadend = (e: Event) => {
+        const fileContent = fileReader.result;
+        if(fileContent){
+          if(extension!.toLowerCase() === 'png'){
+            handleStegDecode(fileContent, type);
+          } else {
+            handleKeyLoader(fileContent as string, type);
           }
         }
       }
-      fileReader.readAsText(file);
+      if(extension!.toLowerCase() === 'png'){
+        fileReader.readAsDataURL(file);
+      } else {
+        fileReader.readAsText(file);
+      }
     }
   }
 

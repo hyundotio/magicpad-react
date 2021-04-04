@@ -33,7 +33,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
       setProcessed(true);
       if(stegFile){
         const fileReader = new FileReader();
-        fileReader.onloadend = (e) => e.target?.result! && handleStegEncode(processedData, e.target?.result!);
+        fileReader.onloadend = (e: Event) => fileReader.result && handleStegEncode(processedData, fileReader.result);
         fileReader.readAsDataURL(stegFile);
       }
       stegFile ? processed && stegProcessed && props.setPopupVisibility(true) : processed && props.setPopupVisibility(true);
@@ -41,8 +41,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
   }
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target as HTMLInputElement;
-    const file = input.files && input.files[0];
+    const file = e.target.files && e.target.files[0];
     if(file) setStegFile(file);
   }
 

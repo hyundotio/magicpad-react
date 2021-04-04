@@ -26,11 +26,10 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
   }
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target as HTMLInputElement;
-    const file = input.files && input.files[0];
+    const file = e.target.files && e.target.files[0];
     if(file){
       const fileReader = new FileReader();
-      fileReader.onloadend = (e) => e.target?.result! && handleStegDecode(e.target?.result!);
+      fileReader.onloadend = (e: Event) => fileReader.result && handleStegDecode(fileReader.result);
       fileReader.readAsDataURL(file);
     }
   }
