@@ -49,9 +49,9 @@ const stegUtil_createArrayFromArgs = function(args, index, threshold) {
 const stegUtil_loadImg =  async (url: StegInput): Promise<HTMLImageElement> => {
   return new Promise<HTMLImageElement>((resolve, reject) => {
     let image = new Image();
+    image.setAttribute('crossOrigin', 'anonymous');
     image.onload = () => resolve(image);
-    //@ts-ignore
-    image.src = url;
+    image.src = url as string;
   })
 }
 

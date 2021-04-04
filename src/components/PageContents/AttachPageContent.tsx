@@ -41,7 +41,7 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
  const handleProcess = function() {
     if(fileReference){
       const fileReader = new FileReader();
-      fileReader.onloadend = (event) => event?.target!.result && processDataAsync(event.target.result);
+      fileReader.onloadend = (e) => e?.target!.result && processDataAsync(e.target.result);
       if(attachType === 'encrypt'){
         fileReader.readAsArrayBuffer(fileReference);
       } else {

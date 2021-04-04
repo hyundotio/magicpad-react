@@ -30,9 +30,7 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
     const file = input.files && input.files[0];
     if(file !== null){
       const fileReader = new FileReader();
-      fileReader.onloadend = function(e){
-        e.target?.result! && handleDecode(e.target?.result!);
-      }
+      fileReader.onloadend = (e) => e.target?.result! && handleDecode(e.target?.result!);
       fileReader.readAsDataURL(file);
     }
   }
