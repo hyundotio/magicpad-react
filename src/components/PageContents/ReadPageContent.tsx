@@ -28,16 +28,16 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement;
     const file = input.files && input.files[0];
-    if(file !== null){
+    if(file){
       const fileReader = new FileReader();
-      fileReader.onloadend = (e) => e.target?.result! && handleDecode(e.target?.result!);
+      fileReader.onloadend = (e) => e.target?.result! && handleStegDecode(e.target?.result!);
       fileReader.readAsDataURL(file);
     }
   }
 
-  async function handleDecode(input: StegInput){
+  async function handleStegDecode(input: StegInput){
     const decodedMessage = await decodeSteg(input);
-    console.log(decodedMessage);
+    setTextareaValue(decodedMessage);
   }
 
   return (
@@ -45,7 +45,7 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
       Read
       Import steg: <input type="file" onChange={handleOnChange} />
       <PasswordInput setPasswordValue={setPasswordValue} />
-      <TextareaInput setTextareaValue={setTextareaValue} />
+      <TextareaInput setTextareaValue={setTextareaValue} textareaValue={textareaValue} />
       <button
         disabled={passwordValue.length === 0 || textareaValue.length === 0}
         onClick={handleDecrypt}

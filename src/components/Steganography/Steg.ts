@@ -7,7 +7,7 @@ const stegUtil_isPrime = function(n: number) {
   const m = Math.sqrt(n);
   for (let i = 5; i <= m; i += 6) {
     if (n % i === 0) return false;
-    if (n % (i+2) === 0) return false;
+    if (n % (i + 2) === 0) return false;
   }
   return true;
 }
@@ -16,35 +16,6 @@ const stegUtil_findNextPrime = function(n: number) {
   for (let i = n; true; i += 1)
     if(stegUtil_isPrime(i)) return i;
 }
-
-/*
-const stegUtil_sum = function(func: Function, end: number, options) {
-  let sum = 0;
-  options = options || {};
-  for(let i = options.start || 0; i < end; i += (options.inc || 1))
-    sum += func(i) || 0;
-
-  return (sum === 0 && options.defValue ? options.defValue : sum);
-}
-
-const stegUtil_product = function(func, end, options) {
-  let prod = 1;
-  options = options || {};
-  for(let i = options.start || 0; i < end; i += (options.inc || 1))
-    prod *= func(i) || 1;
-
-  return (prod === 1 && options.defValue ? options.defValue : prod);
-}
-
-const stegUtil_createArrayFromArgs = function(args, index, threshold) {
-  let ret = new Array(threshold - 1);
-  for(let i = 0; i < threshold; i += 1)
-    ret[i] = args(i >= index ? i + 1 : i);
-
-  return ret;
-}
-
-*/
 
 const stegUtil_loadImg =  async (url: StegInput): Promise<HTMLImageElement> => {
   return new Promise<HTMLImageElement>((resolve, reject) => {
@@ -127,7 +98,7 @@ export async function encodeSteg(message: string, image: StegInput): Promise<str
       curOverlapping = (overlapping * i) % t;
       if(curOverlapping > 0 && oldDec) {
         // Mask for the new character, shifted with the count of overlapping bits
-        mask = Math.pow(2,t - curOverlapping) - 1;
+        mask = Math.pow(2, t - curOverlapping) - 1;
         // Mask for the old character, i.e. the t-curOverlapping bits on the right
         // of that character
         oldMask = Math.pow(2, codeUnitSize) * (1 - Math.pow(2, -curOverlapping));
@@ -139,7 +110,7 @@ export async function encodeSteg(message: string, image: StegInput): Promise<str
           mask = Math.pow(2, 2 * t - curOverlapping) * (1 - Math.pow(2, -t));
           for(j = 1; j < bundlesPerChar; j += 1) {
             decM = dec & mask;
-            modMessage.push(decM >> (((j - 1) * t)+(t - curOverlapping)));
+            modMessage.push(decM >> (((j - 1) * t) + (t - curOverlapping)));
             mask <<= t;
           }
           if((overlapping * (i + 1)) % t === 0) {
@@ -236,54 +207,7 @@ export async function decodeSteg(image: StegInput): Promise<string> {
         done = messageCompleted(data, i, threshold);
         if(!done) modMessage.push(data[i] - (255 - prime + 1));
       }
-    } else {
-      /*for(k = 0, done=false; !done; k+=1) {
-        q = [];
-        for(i=(k*threshold*4)+3; i<(k+1)*threshold*4 && i<data.length && !done; i+=4) {
-          done = messageCompleted(data,i,threshold);
-          if(!done) q.push(data[i]-(255-prime+1)); // at Array index (i-((k*threshold*4)+3))/4
-        }
-        if(q.length === 0) continue;
-        // Calculate the coefficients which are the same for any order of the letiable, but different for each argument
-        // i.e. for args[0] coeff=q[0]*(args[1]-args[2])*(args[1]-args[3])*...(args[1]-args[threshold-1])*...*(args[threshold-1]-args[1])*...*(args[threshold-1]-args[threshold-2])
-        let letiableCoefficients = (function(i) {
-          if(i >= q.length) return [];
-          return [q[i]*
-          stegUtil_product(function(j) {
-          if(j !== i) {
-            return stegUtil_product(function(l) {
-            if(l !== j) return (args(j) - args(l));
-            }, q.length);
-          }
-          }, q.length)].concat(arguments.callee(i+1));
-        }(0));
-        // Calculate the coefficients which are different for each order of the letiable and for each argument
-        // i.e. for order=0 and args[0] coeff=args[1]*args[2]*...*args[threshold-1]
-        let orderletiableCoefficients = function(order, letIndex) {
-          let workingArgs = stegUtil_createArrayFromArgs(args,letIndex,q.length), maxRec = q.length - (order+1);
-          return (function(startIndex, endIndex, recDepth) {
-          let recall = arguments.callee;
-          return stegUtil_sum(function(i) {
-            if(recDepth < maxRec)
-            return workingArgs[i]*recall(i+1,startIndex+order+2,recDepth+1);
-          }, endIndex, {"start": startIndex, "defValue": 1});
-          }(0,order+1,0));
-        };
-        // Calculate the common denominator of the whole term
-        let commonDenominator = stegUtil_product(function(i) {
-          return stegUtil_product(function(j) {
-          if(j !== i) return (args(i) - args(j));
-          }, q.length);
-        }, q.length);
-
-        for(i = 0; i < q.length; i+=1) {
-          modMessage.push((((Math.pow(-1,q.length-(i+1))*stegUtil_sum(function(j) {
-          return orderletiableCoefficients(i,j)*
-          letiableCoefficients[j];
-          }, q.length))%prime)+prime)%prime); // ?divide by commonDenominator?
-        }
-      }
-    */}
+    }
 
     let message = "", charCode = 0, bitCount = 0, mask = Math.pow(2, codeUnitSize) - 1;
     for(i = 0; i < modMessage.length; i += 1) {
@@ -301,3 +225,84 @@ export async function decodeSteg(image: StegInput): Promise<string> {
   }
   return '';
 };
+
+
+/* decodeSteg after if. WIP
+else {
+ /*for(k = 0, done=false; !done; k+=1) {
+   q = [];
+   for(i=(k*threshold*4)+3; i<(k+1)*threshold*4 && i<data.length && !done; i+=4) {
+     done = messageCompleted(data,i,threshold);
+     if(!done) q.push(data[i]-(255-prime+1)); // at Array index (i-((k*threshold*4)+3))/4
+   }
+   if(q.length === 0) continue;
+   // Calculate the coefficients which are the same for any order of the letiable, but different for each argument
+   // i.e. for args[0] coeff=q[0]*(args[1]-args[2])*(args[1]-args[3])*...(args[1]-args[threshold-1])*...*(args[threshold-1]-args[1])*...*(args[threshold-1]-args[threshold-2])
+   let letiableCoefficients = (function(i) {
+     if(i >= q.length) return [];
+     return [q[i]*
+     stegUtil_product(function(j) {
+     if(j !== i) {
+       return stegUtil_product(function(l) {
+       if(l !== j) return (args(j) - args(l));
+       }, q.length);
+     }
+     }, q.length)].concat(arguments.callee(i+1));
+   }(0));
+   // Calculate the coefficients which are different for each order of the letiable and for each argument
+   // i.e. for order=0 and args[0] coeff=args[1]*args[2]*...*args[threshold-1]
+   let orderletiableCoefficients = function(order, letIndex) {
+     let workingArgs = stegUtil_createArrayFromArgs(args,letIndex,q.length), maxRec = q.length - (order+1);
+     return (function(startIndex, endIndex, recDepth) {
+     let recall = arguments.callee;
+     return stegUtil_sum(function(i) {
+       if(recDepth < maxRec)
+       return workingArgs[i]*recall(i+1,startIndex+order+2,recDepth+1);
+     }, endIndex, {"start": startIndex, "defValue": 1});
+     }(0,order+1,0));
+   };
+   // Calculate the common denominator of the whole term
+   let commonDenominator = stegUtil_product(function(i) {
+     return stegUtil_product(function(j) {
+     if(j !== i) return (args(i) - args(j));
+     }, q.length);
+   }, q.length);
+
+   for(i = 0; i < q.length; i+=1) {
+     modMessage.push((((Math.pow(-1,q.length-(i+1))*stegUtil_sum(function(j) {
+     return orderletiableCoefficients(i,j)*
+     letiableCoefficients[j];
+     }, q.length))%prime)+prime)%prime); // ?divide by commonDenominator?
+   }
+ }
+} */
+
+
+/*
+const stegUtil_sum = function(func: Function, end: number, options) {
+  let sum = 0;
+  options = options || {};
+  for(let i = options.start || 0; i < end; i += (options.inc || 1))
+    sum += func(i) || 0;
+
+  return (sum === 0 && options.defValue ? options.defValue : sum);
+}
+
+const stegUtil_product = function(func, end, options) {
+  let prod = 1;
+  options = options || {};
+  for(let i = options.start || 0; i < end; i += (options.inc || 1))
+    prod *= func(i) || 1;
+
+  return (prod === 1 && options.defValue ? options.defValue : prod);
+}
+
+const stegUtil_createArrayFromArgs = function(args, index, threshold) {
+  let ret = new Array(threshold - 1);
+  for(let i = 0; i < threshold; i += 1)
+    ret[i] = args(i >= index ? i + 1 : i);
+
+  return ret;
+}
+
+*/

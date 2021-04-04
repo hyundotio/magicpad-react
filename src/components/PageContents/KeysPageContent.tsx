@@ -13,6 +13,9 @@ import { loadPublicKey, loadPrivateKey } from "../../actions/SessionActions";
 
 import { isPublicKey, isPrivateKey } from "../Cryptography/VerifyKeys";
 
+import { encodeSteg, decodeSteg } from "../Steganography/Steg";
+import { StegInput } from "../../@types/StegTypes";
+
 interface Props {
   loadPublicKey: typeof loadPublicKey;
   loadPrivateKey: typeof loadPrivateKey;
@@ -24,6 +27,8 @@ interface Props {
 const KeysPageContent : React.FunctionComponent<Props> = props => {
   //Reducer, set public Key
   //Reducer, set Private Key
+  const publicKeyInputRef = React.useRef<HTMLInputElement | null>(null);
+  const privateKeyInputRef = React.useRef<HTMLInputElement | null>(null);
 
   const openPopupClick = function(popupPage: KEYSPOPUPTYPES){
     props.setPopupPage(popupPage);
@@ -33,8 +38,47 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
     const input = e.target as HTMLInputElement;
     const file = input.files && input.files[0];
-    if(type === 'public') isPublicKey('key') && props.loadPublicKey('public key loaded!');
-    if(type === 'private') isPrivateKey('key') && props.loadPrivateKey('public key loaded!');
+    if(file){
+      const fileReader = new FileReader();
+      fileReader.onloadend = (e) => {
+        if(e.target?.result!){
+          const key = e.target?.result! as string;
+          if(type === 'public'){
+            if(isPublicKey(key)){
+              props.loadPublicKey(key);
+            } else {
+              resetPublicKeyInput();
+            }
+          }
+          if(type === 'private'){
+            if(isPrivateKey(key)){
+              props.loadPrivateKey(key);
+            } else {
+              resetPrivateKeyInput();
+            }
+          }
+        }
+      }
+      fileReader.readAsText(file);
+    }
+  }
+
+  const resetPublicKeyInput = function(){
+    if(publicKeyInputRef !== null && publicKeyInputRef.current) publicKeyInputRef.current.value = "";
+  }
+
+  const resetPrivateKeyInput = function(){
+    if(privateKeyInputRef !== null && privateKeyInputRef.current) privateKeyInputRef.current.value = "";
+  }
+
+  const resetPublicKey = function(){
+    props.loadPublicKey('');
+    resetPublicKeyInput();
+  }
+
+  const resetPrivateKey = function(){
+    props.loadPrivateKey('');
+    resetPrivateKeyInput();
   }
 
   return(
@@ -43,16 +87,24 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
       <form>
         <input accept=".asc,.png"
                type="file"
+               ref={publicKeyInputRef}
                onChange={(e) => {handleOnChange(e,'public')}}
         />
-        <input type="reset" defaultValue="Reset" />
+        <input type="reset"
+               defaultValue="Reset"
+               onClick={resetPublicKey}
+        />
       </form>
       <form>
         <input accept=".asc,.png"
                type="file"
+               ref={privateKeyInputRef}
                onChange={(e) => {handleOnChange(e,'private')}}
         />
-        <input type="reset" defaultValue="Reset" />
+        <input type="reset"
+               defaultValue="Reset"
+               onClick={resetPrivateKey}
+        />
       </form>
       Keys Popups
       <button onClick={() => openPopupClick(KEYSPOPUPTYPES.PASTE)}>Paste keys in</button>

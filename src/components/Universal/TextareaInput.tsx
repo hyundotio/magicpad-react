@@ -2,6 +2,7 @@ import React from "react";
 
 interface Props {
   setTextareaValue: Function;
+  textareaValue: string;
 }
 
 const TextareaInput : React.FunctionComponent<Props> = props => {
@@ -12,7 +13,7 @@ const TextareaInput : React.FunctionComponent<Props> = props => {
   }
 
   return (
-    <textarea onChange={handleOnChange} placeholder={"Text here"}></textarea>
+    <textarea onChange={handleOnChange} placeholder={"Text here"} value={props.textareaValue}></textarea>
   )
 }
 

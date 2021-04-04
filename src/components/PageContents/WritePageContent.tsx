@@ -16,6 +16,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
   const [textareaValue, setTextareaValue] = useState("");
   const [stegFile, setStegFile] = useState<Blob | undefined>(undefined);
   const [processed, setProcessed] = useState(false);
+  const [stegProcessed, setStegProcessed] = useState(false);
   const pgpWebWorker = new WebWorker();
 
   const handleSignOnClick = function(e: React.FormEvent<HTMLInputElement>){
@@ -24,30 +25,30 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
   }
 
   async function handleEncrypt(){
+    setStegProcessed(false);
+    setProcessed(false);
     const processedData = await pgpWebWorker.encryptString(textareaValue, passwordValue, signMessage);
     if(processedData){
       props.setProcessedContent(processedData);
       setProcessed(true);
       if(stegFile){
         const fileReader = new FileReader();
-        fileReader.onloadend = function(e){
-          if(e.target?.result!) handleEncode(e.target?.result!);
-        }
+        fileReader.onloadend = (e) => e.target?.result! && handleStegEncode(processedData, e.target?.result!);
         fileReader.readAsDataURL(stegFile);
       }
-      props.setPopupVisibility(true);
+      stegFile ? processed && stegProcessed && props.setPopupVisibility(true) : processed && props.setPopupVisibility(true);
     }
   }
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement;
     const file = input.files && input.files[0];
-    if(file !== null) setStegFile(file);
+    if(file) setStegFile(file);
   }
 
-  async function handleEncode(input: StegInput){
-    const encodedSteg = await encodeSteg('encrypted text', input);
-    console.log(encodedSteg);
+  async function handleStegEncode(message: string, stegInput: StegInput){
+    const encodedSteg = await encodeSteg(message, stegInput);
+    setStegProcessed(true);
   }
 
   return (
@@ -56,7 +57,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
         Import steg host: <input type="file" onChange={handleOnChange} />
         Sign message: <input type="checkbox" onClick={handleSignOnClick} />
         {signMessage ? <PasswordInput setPasswordValue={setPasswordValue} /> : null}
-        <TextareaInput setTextareaValue={setTextareaValue} />
+        <TextareaInput setTextareaValue={setTextareaValue} textareaValue={textareaValue} />
         <button
           disabled={
             signMessage ?
