@@ -48,7 +48,9 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
       <button
         disabled={passwordValue.length === 0 || textareaValue.length === 0}
         onClick={handleDecrypt}
-      >Decrypt</button>
+      >
+        Decrypt
+      </button>
       <button disabled={!processed} onClick={() => props.setPopupVisibility(true)}>Open decrypted content</button>
     </div>
   )

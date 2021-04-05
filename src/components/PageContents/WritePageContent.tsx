@@ -64,7 +64,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
             textareaValue.length === 0
           }
           onClick={handleEncrypt}
-          >
+        >
           Encrypt
         </button>
         <button disabled={!processed} onClick={() => props.setPopupVisibility(true)}>Open encrypted content</button>

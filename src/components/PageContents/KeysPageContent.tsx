@@ -105,7 +105,7 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
         <input accept=".asc,.png"
                type="file"
                ref={publicKeyInputRef}
-               onChange={(e) => {handleOnChange(e,'public')}}
+               onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleOnChange(e, 'public') }}
         />
         <input type="reset"
                defaultValue="Reset"
@@ -116,7 +116,7 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
         <input accept=".asc,.png"
                type="file"
                ref={privateKeyInputRef}
-               onChange={(e) => {handleOnChange(e,'private')}}
+               onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleOnChange(e, 'private') }}
         />
         <input type="reset"
                defaultValue="Reset"

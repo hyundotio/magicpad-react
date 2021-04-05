@@ -3,11 +3,11 @@ import React from "react";
 import { TabSwitcher, TabHeader, TabContent } from "../../components/Universal/Tabs";
 import { KEYSPOPUPTYPES } from "../../@types/KeysPopupTypes";
 
-import PopupContentsKeysBrowseSearch from "./Contents/Keys/BrowseSearch";
-import PopupContentsKeysBrowseUpload from "./Contents/Keys/BrowseUpload";
-import PopupContentsKeysConvert from "./Contents/Keys/Convert";
-import PopupContentsKeysNewKeys from "./Contents/Keys/NewKeys"
-import PopupContentsKeysPaste from "./Contents/Keys/Paste";
+import PopupContentsKeysBrowseSearch from "../../components/PageContents/PopupContents/Keys/BrowseSearch";
+import PopupContentsKeysBrowseUpload from "../../components/PageContents/PopupContents/Keys/BrowseUpload";
+import PopupContentsKeysConvert from "../../components/PageContents/PopupContents/Keys/Convert";
+import PopupContentsKeysNewKeys from "../../components/PageContents/PopupContents/Keys/NewKeys"
+import PopupContentsKeysPaste from "../../components/PageContents/PopupContents/Keys/Paste";
 
 interface Props {
   popupPage: KEYSPOPUPTYPES;
