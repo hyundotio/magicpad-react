@@ -182,7 +182,6 @@ export async function decodeSteg(image: StegInput): Promise<string> {
     threshold = STEG_CONFIG.threshold,
     codeUnitSize = STEG_CONFIG.codeUnitSize,
     prime = stegUtil_findNextPrime(Math.pow(2, t)),
-    args = STEG_CONFIG.args,
     messageCompleted = STEG_CONFIG.messageCompleted;
 
   if(!t || t < 1 || t > 7) throw new Error('Invalid option: Parameter t = " + t + " is not valid: 0 < t < 8');
@@ -198,10 +197,9 @@ export async function decodeSteg(image: StegInput): Promise<string> {
     shadowCtx.drawImage(imageElement, 0, 0);
     let imageData = shadowCtx.getImageData(0, 0, shadowCanvas.width, shadowCanvas.height),
       data = imageData.data,
-      modMessage = [],
-      q;
+      modMessage = [];
 
-    let i, k, done;
+    let i, done;
     if (threshold === 1) {
       for(i = 3, done = false; !done && i < data.length && !done; i += 4) {
         done = messageCompleted(data, i, threshold);
