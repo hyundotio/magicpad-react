@@ -23,7 +23,7 @@ const PopupContentsKeysConvert : React.FunctionComponent = () => {
     const url = dataURItoBlobURL(`data:application/octet-stream;base64;filename=convertedKey.asc,${btoa(decodedMessage)}`);
     setConvertedKeyDownloadLink(url);
   }
-  
+
   return (
     <div className="popup-content keys-convert">
       Keys convert

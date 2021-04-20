@@ -56,7 +56,7 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
       <form>
         Encrypt <input name="attach_type" type="radio" value="encrypt" onClick={handleAttachTypeOnClick} />
         Decrypt <input name="attach_type" type="radio" value="decrypt" onClick={handleAttachTypeOnClick} />
-        {attachType === "decrypt" ? <PasswordInput setPasswordValue={setPasswordValue} /> : null}
+        {attachType === "decrypt" ? <PasswordInput passwordValue={passwordValue} setPasswordValue={setPasswordValue} /> : null}
         <input type="file"
                onChange={handleFileOnChange}
         />

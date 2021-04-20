@@ -55,7 +55,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
         Write
         Import steg host: <input type="file" onChange={handleOnChange} />
         Sign message: <input type="checkbox" onClick={handleSignOnClick} />
-        {signMessage ? <PasswordInput setPasswordValue={setPasswordValue} /> : null}
+        {signMessage ? <PasswordInput passwordValue={passwordValue} setPasswordValue={setPasswordValue} /> : null}
         <TextareaInput setTextareaValue={setTextareaValue} textareaValue={textareaValue} />
         <button
           disabled={

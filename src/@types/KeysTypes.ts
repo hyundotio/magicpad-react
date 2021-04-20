@@ -8,6 +8,14 @@ export interface Keys {
 export interface GeneratedKeys {
   publicKey: string;
   privateKey: string;
+  [key: string]: string;
+}
+
+export interface KeyDownloadLinks {
+  publicKey: string;
+  privateKey: string;
+  publicKeySteg: string;
+  privateKeySteg: string;
 }
 
 export interface KeyForm {

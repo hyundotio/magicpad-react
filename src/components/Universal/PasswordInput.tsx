@@ -2,6 +2,7 @@ import React, { useState } from "react";
 
 interface Props {
   setPasswordValue: Function;
+  passwordValue: string;
 }
 
 const PasswordInput : React.FunctionComponent<Props> = props => {
@@ -20,7 +21,7 @@ const PasswordInput : React.FunctionComponent<Props> = props => {
 
   return (
     <>
-      <input type={showPassword ? "text" : "password"} onChange={handleOnChange} placeholder="Password" />
+      <input type={showPassword ? "text" : "password"} onChange={handleOnChange} value={props.passwordValue} placeholder="Password" />
       <input type="checkbox" onClick={handleOnClick}/>
     </>
   )

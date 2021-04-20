@@ -43,7 +43,7 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
     <div className="page-content read-page">
       Read
       Import steg: <input type="file" onChange={handleOnChange} />
-      <PasswordInput setPasswordValue={setPasswordValue} />
+      <PasswordInput passwordValue={passwordValue} setPasswordValue={setPasswordValue} />
       <TextareaInput setTextareaValue={setTextareaValue} textareaValue={textareaValue} />
       <button
         disabled={passwordValue.length === 0 || textareaValue.length === 0}
