@@ -1,6 +1,6 @@
 import { ProcessedData } from "../@types/ProcessedDataTypes";
 import { GeneratedKeys, KeyForm } from "../@types/KeysTypes";
-import * as openpgp from "openpgp";
+import { generateKey as openpgpGenerateKeys } from "openpgp";
 
 export function encryptString(data: string, pw: string, sign: boolean): string {
   return data + ' encrypt';
@@ -23,7 +23,7 @@ export async function generateKeys(form: KeyForm): Promise<GeneratedKeys> {
 		numBits: 4096,
 		passphrase: form.password
 	}
-  const generatedKeys = await openpgp.generateKey(options);
+  const generatedKeys = await openpgpGenerateKeys(options);
   return {
     publicKey: generatedKeys.publicKeyArmored.trim(),
     privateKey: generatedKeys.privateKeyArmored.trim()

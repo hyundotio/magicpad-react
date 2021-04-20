@@ -3,9 +3,11 @@ import PasswordInput from "../../../Universal/PasswordInput";
 import WebWorker from "../../../../webworker";
 import { encodeSteg } from "../../../Steganography/Steg";
 import { validateEmail } from "../../../Universal/Helpers/EmailValidator";
+import { stringTruncator } from "../../../Universal/Helpers/StringTruncator";
 import { revokeBlob, dataURItoBlobURL } from "../../../FileOutput/BlobHandler";
 import { publicKeyBase64 } from "../../../KeyRefBase64/PublicKeyRef";
 import { privateKeyBase64 } from "../../../KeyRefBase64/PrivateKeyRef";
+import { key as openpgpKey } from "openpgp";
 
 import { GeneratedKeys, KeyDownloadLinks } from "../../../../@types/KeysTypes";
 import { StegInput } from "../../../../@types/StegTypes";
@@ -41,6 +43,27 @@ const PopupContentsKeysNewKeys : React.FunctionComponent = () => {
     setPasswordValue("");
   }
 
+  async function prepareSteg(img: HTMLImageElement, pgpKey: string, keyType: string){
+    const keyInit = await openpgpKey.readArmored(pgpKey);
+    const imgCanvas = document.createElement("canvas");
+    const imgContext = imgCanvas.getContext("2d");
+    imgContext!.canvas.width = img.width;
+    imgContext!.canvas.height = img.height;
+    imgContext!.drawImage(img, 0, 0, img.width, img.height);
+    imgContext!.font = '11px IBM Plex Mono';
+    imgContext!.fillStyle = '#0062ff';
+    //No types defined in the OpenPGP Type package. Perhaps PR one.
+    //@ts-ignore
+    const emailStr = keyInit.keys[0].users[0].userId.email ? stringTruncator(keyInit.keys[0].users[0].userId.email) : 'Converted key';
+    imgContext!.fillText(emailStr, 14, 55);
+    const stegKey = await encodeSteg(pgpKey, imgCanvas.toDataURL("image/png"));
+    if (keyType === 'publicKey') {
+      setDownloadLinks((currentDownloadLinks) => ({...currentDownloadLinks, publicKeySteg: stegKey}));
+    } else {
+      setDownloadLinks((currentDownloadLinks) => ({...currentDownloadLinks, privateKeySteg: stegKey}));
+    }
+  }
+
   async function handleKeyGeneration() {
     setIsWorking(true);
     for (const link in downloadLinks) revokeBlob(link);
@@ -51,14 +74,12 @@ const PopupContentsKeysNewKeys : React.FunctionComponent = () => {
     }
     const asyncGeneratedKeys = await pgpWebWorker.generateKeys(keyForm);
     setGeneratedKeys(asyncGeneratedKeys);
-    for (const key in asyncGeneratedKeys) {
-      if(asyncGeneratedKeys[key]){
-        const stegKey = await encodeSteg(asyncGeneratedKeys[key], key === 'publicKey' ? publicKeyBase64 : privateKeyBase64);
-        if (key === 'publicKey') {
-          setDownloadLinks((currentDownloadLinks) => ({...currentDownloadLinks, publicKeySteg: stegKey}));
-        } else {
-          setDownloadLinks((currentDownloadLinks) => ({...currentDownloadLinks, privateKeySteg: stegKey}));
-        }
+    for (const keyType in asyncGeneratedKeys) {
+      const pgpKey = asyncGeneratedKeys[keyType];
+      if(pgpKey){
+        const img = document.createElement("img");
+        img.onload = () => prepareSteg(img, pgpKey, keyType);
+        img.src = keyType === 'publicKey' ? publicKeyBase64 : privateKeyBase64 as string;
       }
     }
     const privateKeyUrl = dataURItoBlobURL(`data:application/octet-stream;base64;filename=privateKey.asc,${btoa(generatedKeys.privateKey)}`);
