@@ -89,15 +89,15 @@ const PopupContentsKeysNewKeys : React.FunctionComponent = () => {
   }
 
   return (
-    <div className="popup-content keys-new-keys">
+    <div className={`popup-content keys-new-keys${isWorking ? ' keys-generating' : ''}`}>
       New keys
-      <div className="new-key-container-page-1">
+      <div className={`new-key-container-page-1${formIsReady ? '' : ' active'}`}>
         <input type="text" value={nameValue} placeholder="Name" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNameValue(e.target.value)} />
         <input type="email" value={emailValue} placeholder="E-mail" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmailValue(e.target.value)} />
         <PasswordInput passwordValue={passwordValue} setPasswordValue={(input: string) => setPasswordValue(input)} />
         <button disabled={!formIsReady || isWorking} onClick={handleKeyGeneration}>Generate keys</button>
       </div>
-      <div className="new-key-container-page-2">
+      <div className={`new-key-container-page-2${formIsReady ? ' active' : ''}`}>
         <a href={downloadLinks.publicKey} download="publicKey.asc">Download public key</a>
         <a href={downloadLinks.privateKey} download="privateKey.asc">Download private key</a>
         <a href={downloadLinks.publicKeySteg} download="publicKey.png">Download public steg key</a>
