@@ -13,7 +13,10 @@ const rootReducer = combineReducers<ApplicationState>({
   userKeys: KeysReducer
 })
 
-export default function configureStore(): Store<ApplicationState> {
+export function configureStore(): Store<ApplicationState> {
   const store = createStore(rootReducer, undefined, composeWithDevTools(applyMiddleware(thunk)));
   return store
 }
+
+export const store = configureStore();
+export default store;

@@ -1,13 +1,17 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
 import PasswordInput from "../Universal/PasswordInput";
 import TextareaInput from "../Universal/TextareaInput";
 import WebWorker from '../../webworker';
 import { encodeSteg } from "../Steganography/Steg";
 import { StegInput } from "../../@types/StegTypes";
+import { Keys } from "../../@types/KeysTypes";
+import { ApplicationState } from "../../Store";
 
 interface Props {
   setPopupVisibility: Function;
   setProcessedContent: Function;
+  loadedKeys: Keys;
 }
 
 const WritePageContent : React.FunctionComponent<Props> = props => {
@@ -27,7 +31,8 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
   async function handleEncrypt(){
     setStegProcessed(false);
     setProcessed(false);
-    const processedData = await pgpWebWorker.encryptString(textareaValue, passwordValue, signMessage);
+    const processedData = (await pgpWebWorker.encryptString(textareaValue, passwordValue, signMessage,
+                                                           props.loadedKeys.publicKey, props.loadedKeys.privateKey)).trim();
     if(processedData){
       props.setProcessedContent(processedData);
       setProcessed(true);
@@ -72,4 +77,10 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
   )
 }
 
-export default WritePageContent
+const mapStateToProps = (state: ApplicationState) => {
+  return {
+    loadedKeys: state.userKeys.keys
+  }
+}
+
+export default connect(mapStateToProps)(WritePageContent);

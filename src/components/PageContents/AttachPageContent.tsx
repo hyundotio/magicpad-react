@@ -1,11 +1,15 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
 import { ProcessedData } from "../../@types/ProcessedDataTypes";
+import { Keys } from "../../@types/KeysTypes";
 import PasswordInput from "../Universal/PasswordInput";
 import WebWorker from '../../webworker';
+import { ApplicationState } from "../../Store";
 
 interface Props {
   setPopupVisibility: Function;
   setProcessedContent: Function;
+  loadedKeys: Keys;
 }
 
 const AttachPageContent : React.FunctionComponent<Props> = props => {
@@ -29,9 +33,9 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
     const pgpWebWorker = new WebWorker();
     let processedData: ProcessedData;
     if(attachType === 'encrypt'){
-      processedData = await pgpWebWorker.encryptAttachment(data, passwordValue);
+      processedData = await pgpWebWorker.encryptAttachment(data, passwordValue, props.loadedKeys.publicKey);
     } else {
-      processedData = await pgpWebWorker.decryptAttachment(data, passwordValue);
+      processedData = await pgpWebWorker.decryptAttachment(data, passwordValue, props.loadedKeys.privateKey);
     }
     props.setProcessedContent(processedData);
     setProcessed(true);
@@ -80,4 +84,10 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
   )
 }
 
-export default AttachPageContent
+const mapStateToProps = (state: ApplicationState) => {
+  return {
+    loadedKeys: state.userKeys.keys
+  }
+}
+
+export default connect(mapStateToProps)(AttachPageContent);

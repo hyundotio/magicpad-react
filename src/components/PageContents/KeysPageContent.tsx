@@ -144,6 +144,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
     loadPublicKey: (publicKey: string) => dispatch(loadPublicKey(publicKey)),
     loadPrivateKey: (privateKey: string) => dispatch(loadPrivateKey(privateKey))
   }
-};
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(KeysPageContent);

@@ -1,25 +1,31 @@
 import React, { useState } from "react";
+import { connect } from "react-redux";
 import PasswordInput from "../Universal/PasswordInput";
 import TextareaInput from "../Universal/TextareaInput";
 import { decodeSteg } from "../Steganography/Steg";
 import { StegInput } from "../../@types/StegTypes";
+import { Keys } from "../../@types/KeysTypes";
 import WebWorker from '../../webworker';
+import { ApplicationState } from "../../Store";
 
 interface Props {
   setPopupVisibility: Function;
   setProcessedContent: Function;
+  loadedKeys: Keys;
 }
 
 const ReadPageContent : React.FunctionComponent<Props> = props => {
   const [passwordValue, setPasswordValue] = useState("");
   const [textareaValue, setTextareaValue] = useState("");
+  const [verificationMessage, setVerificationMessage] = useState("");
   const [processed, setProcessed] = useState(false);
   const pgpWebWorker = new WebWorker();
 
   async function handleDecrypt(){
-    const processedData = await pgpWebWorker.decryptString(textareaValue, passwordValue);
-    if(processedData){
-      props.setProcessedContent(processedData);
+    const processedData = await pgpWebWorker.decryptString(textareaValue, passwordValue, props.loadedKeys.publicKey, props.loadedKeys.privateKey);
+    if(processedData.decryptedMessage){
+      props.setProcessedContent(processedData.decryptedMessage);
+      setVerificationMessage(processedData.verificationMessage);
       setProcessed(true);
       props.setPopupVisibility(true);
     }
@@ -43,6 +49,7 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
     <div className="page-content read-page">
       Read
       Import steg: <input type="file" onChange={handleOnChange} />
+      {verificationMessage}
       <PasswordInput passwordValue={passwordValue} setPasswordValue={setPasswordValue} />
       <TextareaInput setTextareaValue={setTextareaValue} textareaValue={textareaValue} />
       <button
@@ -56,4 +63,10 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
   )
 }
 
-export default ReadPageContent
+const mapStateToProps = (state: ApplicationState) => {
+  return {
+    loadedKeys: state.userKeys.keys
+  }
+}
+
+export default connect(mapStateToProps)(ReadPageContent);
