@@ -74,7 +74,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
         >
           Encrypt
         </button>
-        <a href={processedStegLink} download="steg_output.png">Download steg</a>
+        { processedStegLink !== '#' ? <a href={processedStegLink} download="steg_output.png">Download steg</a> : null}
         <button disabled={!processed} onClick={() => props.setPopupVisibility(true)}>Open encrypted content</button>
     </div>
   )

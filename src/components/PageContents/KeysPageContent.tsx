@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
+import { key as openpgpKey } from "openpgp";
+
 import { ApplicationState } from "../../Store";
+
+import { bufferToHex, styleFingerprintString } from "../Universal/Helpers/PGPFingerprintParser";
 
 import PasswordInput from "../Universal/PasswordInput";
 import TextareaInput from "../Universal/TextareaInput";
@@ -9,12 +13,12 @@ import WebWorker from '../../webworker';
 
 import { KEYSPOPUPTYPES } from "../../@types/KeysPopupTypes";
 import { Keys } from "../../@types/KeysTypes";
+import { StegInput } from "../../@types/StegTypes";
 import { loadPublicKey, loadPrivateKey } from "../../actions/SessionActions";
 
 import { isPublicKey, isPrivateKey } from "../Cryptography/VerifyKeys";
 
 import { encodeSteg, decodeSteg } from "../Steganography/Steg";
-import { StegInput } from "../../@types/StegTypes";
 
 interface Props {
   loadPublicKey: typeof loadPublicKey;
@@ -29,6 +33,8 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
   //Reducer, set Private Key
   const publicKeyInputRef = React.useRef<HTMLInputElement | null>(null);
   const privateKeyInputRef = React.useRef<HTMLInputElement | null>(null);
+  const [publicKeyFingerprint, setPublicKeyFingerprint] = useState("");
+  const [privateKeyFingerprint, setPrivateKeyFingerprint] = useState("");
 
   const openPopupClick = function(popupPage: KEYSPOPUPTYPES){
     props.setPopupPage(popupPage);
@@ -40,20 +46,21 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
     handleKeyLoader(decodedKey, type);
   }
 
-  const handleKeyLoader = function(key: string, type: string){
-    if(type === 'public'){
-      if(isPublicKey(key)){
-        props.loadPublicKey(key);
-      } else {
-        resetPublicKeyInput();
+  async function handleKeyLoader(key: string, type: string){
+    if(isPublicKey(key) || isPrivateKey(key)){
+      const initKey = await openpgpKey.readArmored(key);
+      let fingerprintReadableString = '';
+      if(initKey?.keys.length){
+        //No types exist in the OpenPGP Types package.
+        //@ts-expect-error
+        const fingerprintBuffer = new Uint8Array(initKey.keys[0].primaryKey.fingerprint);
+        const fingerprintString = bufferToHex(fingerprintBuffer);
+        fingerprintReadableString = styleFingerprintString(fingerprintString);
       }
-    }
-    if(type === 'private'){
-      if(isPrivateKey(key)){
-        props.loadPrivateKey(key);
-      } else {
-        resetPrivateKeyInput();
-      }
+      if(type === 'public') props.loadPublicKey(key) && setPublicKeyFingerprint(fingerprintReadableString);
+      if(type === 'private') props.loadPrivateKey(key) && setPrivateKeyFingerprint(fingerprintReadableString);
+    } else {
+      resetPublicKeyInput();
     }
   }
 
@@ -102,22 +109,30 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
     <div className="page-content keys-page">
       Keys Imports
       <form>
-        <input accept=".asc,.png"
-               type="file"
-               ref={publicKeyInputRef}
-               onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleOnChange(e, 'public') }}
-        />
+        <label>
+          <span>Public key</span>
+          <input accept=".asc,.png"
+                 type="file"
+                 ref={publicKeyInputRef}
+                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleOnChange(e, 'public') }}
+          />
+          <span>Fingerprint: {publicKeyFingerprint}</span>
+        </label>
         <input type="reset"
                defaultValue="Reset"
                onClick={resetPublicKey}
         />
       </form>
       <form>
-        <input accept=".asc,.png"
-               type="file"
-               ref={privateKeyInputRef}
-               onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleOnChange(e, 'private') }}
-        />
+        <label>
+          <span>Private key</span>
+          <input accept=".asc,.png"
+                 type="file"
+                 ref={privateKeyInputRef}
+                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleOnChange(e, 'private') }}
+          />
+          <span>Fingerprint: {privateKeyFingerprint}</span>
+        </label>
         <input type="reset"
                defaultValue="Reset"
                onClick={resetPrivateKey}
