@@ -68,20 +68,11 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
     const file = e.target.files && e.target.files[0];
     if(file){
       const fileReader = new FileReader();
-      const extension = file.name.split('.').pop();
-      fileReader.onloadend = (e: Event) => {
-        const fileContent = fileReader.result;
-        if(fileContent){
-          if(extension!.toLowerCase() === 'png'){
-            handleStegDecode(fileContent, type);
-          } else {
-            handleKeyLoader(fileContent as string, type);
-          }
-        }
-      }
-      if(extension!.toLowerCase() === 'png'){
+      if(file.type.indexOf('png') !== -1){
+        fileReader.onloadend = (e: Event) => fileReader.result && handleStegDecode(fileReader.result, type);
         fileReader.readAsDataURL(file);
       } else {
+        fileReader.onloadend = (e: Event) => fileReader.result && handleKeyLoader(fileReader.result as string, type);
         fileReader.readAsText(file);
       }
     }

@@ -7,8 +7,8 @@ import { encodeSteg } from "../../../Steganography/Steg";
 import { validateEmail } from "../../../Universal/Helpers/EmailValidator";
 import { stringTruncator } from "../../../Universal/Helpers/StringTruncator";
 import { revokeBlob, dataURItoBlobURL } from "../../../FileOutput/BlobHandler";
-import { publicKeyBase64 } from "../../../KeyRefBase64/PublicKeyRef";
-import { privateKeyBase64 } from "../../../KeyRefBase64/PrivateKeyRef";
+import { PUBLIC_KEY_IMG_BASE } from "../../../KeyRefBase64/PublicKeyRef";
+import { PRIVATE_KEY_IMG_BASE } from "../../../KeyRefBase64/PrivateKeyRef";
 import { key as openpgpKey } from "openpgp";
 
 import { loadPrivateKey } from "../../../../actions/SessionActions";
@@ -27,6 +27,7 @@ const PopupContentsKeysNewKeys : React.FunctionComponent<Props> = props => {
   const [nameValue, setNameValue] = useState("");
   const [emailValue, setEmailValue] = useState("");
   const [passwordValue, setPasswordValue] = useState("");
+  const [filenameValue, setFilenameValue] = useState("");
   const [downloadLinks, setDownloadLinks] = useState<KeyDownloadLinks>({...initialDownloadLinks});
   const [isWorking, setIsWorking] = useState(false);
   const [formIsReady, setFormIsReady] = useState(false);
@@ -87,11 +88,13 @@ const PopupContentsKeysNewKeys : React.FunctionComponent<Props> = props => {
       if(pgpKey){
         const img = document.createElement("img");
         img.onload = () => prepareSteg(img, pgpKey, keyType);
-        img.src = keyType === 'publicKey' ? publicKeyBase64 : privateKeyBase64 as string;
+        img.src = keyType === 'publicKey' ? PUBLIC_KEY_IMG_BASE : PRIVATE_KEY_IMG_BASE as string;
       }
     }
-    const privateKeyUrl = dataURItoBlobURL(`data:application/octet-stream;base64;filename=privateKey.asc,${btoa(generatedKeys.privateKey)}`);
-    const publicKeyUrl = dataURItoBlobURL(`data:application/octet-stream;base64;filename=pubicKey.asc,${btoa(generatedKeys.publicKey)}`);
+    const filename = emailValue.replace('@','AT').replace('.','DOT');
+    const privateKeyUrl = dataURItoBlobURL(`data:application/octet-stream;base64;filename=${filename}_privateKey.asc,${btoa(generatedKeys.privateKey)}`);
+    const publicKeyUrl = dataURItoBlobURL(`data:application/octet-stream;base64;filename=${filename}_pubicKey.asc,${btoa(generatedKeys.publicKey)}`);
+    setFilenameValue(filename);
     setDownloadLinks((currentDownloadLinks) => ({...currentDownloadLinks, publicKey: publicKeyUrl, privateKey: privateKeyUrl}));
     setKeysGenerated(true);
     setIsWorking(false);
@@ -114,10 +117,10 @@ const PopupContentsKeysNewKeys : React.FunctionComponent<Props> = props => {
         </div>
         :
         <div className={`new-key-container-page-2${formIsReady ? ' active' : ''}`}>
-          <a href={downloadLinks.publicKey} download="publicKey.asc" onClick={handlePrivateKeyDownload}>Download public key</a>
-          <a href={downloadLinks.privateKey} download="privateKey.asc">Download private key</a>
-          <a href={downloadLinks.publicKeySteg} download="publicKey.png">Download public steg key</a>
-          <a href={downloadLinks.privateKeySteg} download="privateKey.png" onClick={handlePrivateKeyDownload}>Download private steg key</a>
+          <a href={downloadLinks.publicKey} download={`${filenameValue}_publicKey.asc`} onClick={handlePrivateKeyDownload}>Download public key</a>
+          <a href={downloadLinks.privateKey} download={`${filenameValue}_privateKey.asc`}>Download private key</a>
+          <a href={downloadLinks.publicKeySteg} download={`${filenameValue}_publicKey.png`}>Download public steg key</a>
+          <a href={downloadLinks.privateKeySteg} download={`${filenameValue}_privateKey.png`} onClick={handlePrivateKeyDownload}>Download private steg key</a>
 
           <label htmlFor="new-key-private-import">
             Import private key with download
