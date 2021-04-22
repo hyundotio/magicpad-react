@@ -19,6 +19,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
   const [passwordValue, setPasswordValue] = useState("");
   const [textareaValue, setTextareaValue] = useState("");
   const [stegFile, setStegFile] = useState<Blob | undefined>(undefined);
+  const [processedStegLink, setProcessedStegLink] = useState("#");
   const [processed, setProcessed] = useState(false);
   const [stegProcessed, setStegProcessed] = useState(false);
   const pgpWebWorker = new WebWorker();
@@ -52,6 +53,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
 
   async function handleStegEncode(message: string, stegInput: StegInput){
     const encodedSteg = await encodeSteg(message, stegInput);
+    setProcessedStegLink(encodedSteg);
     setStegProcessed(true);
   }
 
@@ -72,6 +74,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
         >
           Encrypt
         </button>
+        <a href={processedStegLink} download="steg_output.png">Download steg</a>
         <button disabled={!processed} onClick={() => props.setPopupVisibility(true)}>Open encrypted content</button>
     </div>
   )
