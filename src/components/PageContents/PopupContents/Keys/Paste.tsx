@@ -22,14 +22,14 @@ const PopupContentsKeysPaste : React.FunctionComponent<Props> = props => {
     } else if (isPrivateKey(textareaValue)) {
       props.loadPrivateKey(textareaValue);
     } else {
-      //error message. reset?
+      setTextareaValue("");
     }
   }
 
   return (
     <div className="popup-content keys-paste">
       Keys paste
-      <textarea onChange={handleOnChange} placeholder="Paste in public or private key for import."></textarea>
+      <textarea onChange={handleOnChange} value={textareaValue} placeholder="Paste in public or private key for import."></textarea>
       <button disabled={textareaValue.length <= 0} onClick={handleImport} >Import</button>
     </div>
   )
