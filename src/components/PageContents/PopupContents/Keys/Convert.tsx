@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { StegInput } from "../../../../@types/StegTypes";
 import { encodeSteg, decodeSteg } from "../../../Steganography/Steg";
 import { revokeBlob, dataURItoBlobURL } from "../../../FileOutput/BlobHandler";
-import { isPublicKey, isPrivateKey } from "../../../Cryptography/VerifyKeys";
+import { isPublicKey, isPrivateKey } from "../../../Cryptography/Verify";
 import { PUBLIC_KEY_IMG_BASE } from "../../../KeyRefBase64/PublicKeyRef";
 import { PRIVATE_KEY_IMG_BASE } from "../../../KeyRefBase64/PrivateKeyRef";
 import { key as openpgpKey } from "openpgp";

@@ -45,12 +45,19 @@ export async function decryptString(data: string, pw: string, publicKey: string,
   return result
 }
 
-export function encryptAttachment(data: ProcessedData, pw: string, publicKey: string): string {
-  return data && 'encrypted attachment';
+export async function encryptAttachment(data: ArrayBuffer, pw: string, publicKey: string): Promise<string> {
+  const arrayBufferContent = await openpgp.message.fromBinary(new Uint8Array(data));
+  const publicKeyRead = (await openpgp.key.readArmored(publicKey)).keys[0];
+  const encryptedAttachment = await openpgp.encrypt({message: arrayBufferContent, publicKeys:[publicKeyRead]});
+  return encryptedAttachment.data
 }
 
-export function decryptAttachment(data: ProcessedData, pw: string, privateKey: string): string {
-  return data && 'decrypted attachment';
+export async function decryptAttachment(data: string, pw: string, privateKey: string): Promise<string> {
+  const privateKeyRead = (await openpgp.key.readArmored(privateKey)).keys[0];
+  await privateKeyRead.decrypt(pw);
+  const encryptedAttachment = await openpgp.message.readArmored(data);
+  const decryptedAttachment = await openpgp.decrypt({message: encryptedAttachment, privateKeys:[privateKeyRead]});
+  return decryptedAttachment.data
 }
 
 export async function generateKeys(form: KeyForm): Promise<GeneratedKeys> {

@@ -16,7 +16,7 @@ import { Keys } from "../../@types/KeysTypes";
 import { StegInput } from "../../@types/StegTypes";
 import { loadPublicKey, loadPrivateKey } from "../../actions/SessionActions";
 
-import { isPublicKey, isPrivateKey } from "../Cryptography/VerifyKeys";
+import { isPublicKey, isPrivateKey } from "../Cryptography/Verify";
 
 import { encodeSteg, decodeSteg } from "../Steganography/Steg";
 
@@ -101,21 +101,6 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
       Keys Imports
       <form>
         <label>
-          <span>Public key</span>
-          <input accept=".asc,.png"
-                 type="file"
-                 ref={publicKeyInputRef}
-                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleOnChange(e, 'public') }}
-          />
-          <span>Fingerprint: {publicKeyFingerprint}</span>
-        </label>
-        <input type="reset"
-               defaultValue="Reset"
-               onClick={resetPublicKey}
-        />
-      </form>
-      <form>
-        <label>
           <span>Private key</span>
           <input accept=".asc,.png"
                  type="file"
@@ -127,6 +112,21 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
         <input type="reset"
                defaultValue="Reset"
                onClick={resetPrivateKey}
+        />
+      </form>
+      <form>
+        <label>
+          <span>Public key</span>
+          <input accept=".asc,.png"
+                 type="file"
+                 ref={publicKeyInputRef}
+                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => { handleOnChange(e, 'public') }}
+          />
+          <span>Fingerprint: {publicKeyFingerprint}</span>
+        </label>
+        <input type="reset"
+               defaultValue="Reset"
+               onClick={resetPublicKey}
         />
       </form>
       Keys Popups

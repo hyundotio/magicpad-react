@@ -39,11 +39,11 @@ const PopupContentsKeysNewKeys : React.FunctionComponent<Props> = props => {
   const pgpWebWorker = new WebWorker();
 
   useEffect(() => {
-      if(validateEmail(emailValue) && nameValue.trim().length && passwordValue.trim().length){
-        setFormIsReady(true);
-      } else {
-        setFormIsReady(false);
-      }
+    if(validateEmail(emailValue) && nameValue.trim().length && passwordValue.trim().length){
+      setFormIsReady(true);
+    } else {
+      setFormIsReady(false);
+    }
   }, [nameValue, emailValue, passwordValue]);
 
   function resetKeyForm() {

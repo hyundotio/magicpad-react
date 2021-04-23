@@ -5,18 +5,25 @@ import { Keys } from "../../@types/KeysTypes";
 import PasswordInput from "../Universal/PasswordInput";
 import WebWorker from '../../webworker';
 import { ApplicationState } from "../../Store";
+import { revokeBlob, dataURItoBlobURL } from "../FileOutput/BlobHandler";
+import { getFilename } from "../Universal/Helpers/GetFilename";
+import { isPublicKey, isPrivateKey } from "../Cryptography/Verify";
 
 interface Props {
   setPopupVisibility: Function;
   setProcessedContent: Function;
+  setProcessed: Function;
+  processedContent: string;
+  processed: boolean;
   loadedKeys: Keys;
+  setFilename: Function;
+  filename: string;
 }
 
 const AttachPageContent : React.FunctionComponent<Props> = props => {
   const [passwordValue, setPasswordValue] = useState("");
   const [attachType, setAttachType] = useState("");
   const [fileReference, setFileReference] = useState<File | undefined>(undefined);
-  const [processed, setProcessed] = useState(false);
 
   const handleAttachTypeOnClick = function(e: React.FormEvent<HTMLInputElement>){
     const input = e.target as HTMLInputElement;
@@ -29,26 +36,37 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
     file && setFileReference(file);
   }
 
-  async function processDataAsync(data: ProcessedData){
+  async function processDataAsync(data: ProcessedData, filename: string){
     const pgpWebWorker = new WebWorker();
-    let processedData: ProcessedData;
     if(attachType === 'encrypt'){
-      processedData = await pgpWebWorker.encryptAttachment(data, passwordValue, props.loadedKeys.publicKey);
+      const processedData = await pgpWebWorker.encryptAttachment(data, passwordValue, props.loadedKeys.publicKey);
+      const processedDataUrl = dataURItoBlobURL(`data:application/octet-stream;base64;filename=encrypted_${filename}.asc,${btoa(processedData)}`);
+      props.setFilename(`encrypted_${filename}.asc`);
+      props.setProcessedContent(processedDataUrl);
+    } else if (attachType === 'decrypt') {
+
+      props.processedContent.indexOf('blob:') === 0 && revokeBlob(props.processedContent);
+      const processedData = await pgpWebWorker.decryptAttachment(data, passwordValue, props.loadedKeys.privateKey);
+      const processedDataBlob = new Blob([processedData], {
+				type: 'application/octet-stream'
+			});
+      const processedDataBlobUrl = window.URL.createObjectURL(processedDataBlob);
+      props.setFilename(`decrypted_${filename}`);
+      props.setProcessedContent(processedDataBlobUrl);
     } else {
-      processedData = await pgpWebWorker.decryptAttachment(data, passwordValue, props.loadedKeys.privateKey);
+      return
     }
-    props.setProcessedContent(processedData);
-    setProcessed(true);
+    props.setProcessed(true);
     props.setPopupVisibility(true);
   }
 
  const handleProcess = function() {
     if(fileReference){
       const fileReader = new FileReader();
-      fileReader.onloadend = (e) => e?.target!.result && processDataAsync(e.target.result);
+      fileReader.onloadend = (e) => e?.target!.result && processDataAsync(e.target.result, fileReference.name);
       if(attachType === 'encrypt'){
         fileReader.readAsArrayBuffer(fileReference);
-      } else {
+      } else if (attachType === 'decrypt') {
         fileReader.readAsText(fileReference);
       }
     }
@@ -61,9 +79,12 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
         Encrypt <input name="attach_type" type="radio" value="encrypt" onClick={handleAttachTypeOnClick} />
         Decrypt <input name="attach_type" type="radio" value="decrypt" onClick={handleAttachTypeOnClick} />
         {attachType === "decrypt" ? <PasswordInput passwordValue={passwordValue} setPasswordValue={setPasswordValue} /> : null}
-        <input type="file"
-               onChange={handleFileOnChange}
-        />
+        {attachType !== "" ? <input type="file"
+                               onChange={handleFileOnChange}
+                               disabled={attachType === ""}
+                             /> :
+         null
+        }
       </form>
       {
         attachType ?
@@ -76,7 +97,7 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
             }
             onClick={handleProcess}
           >Process attachment</button>
-          <button disabled={!processed} onClick={() => props.setPopupVisibility(true)}>Open processed attachment</button>
+          <button disabled={!props.processed} onClick={() => props.setPopupVisibility(true)}>Open processed attachment</button>
         </div> :
         <div className="attach-init">Choose processing type above.</div>
       }

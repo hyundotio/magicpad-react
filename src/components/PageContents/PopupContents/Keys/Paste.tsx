@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { isPublicKey, isPrivateKey } from "../../../Cryptography/VerifyKeys";
+import { isPublicKey, isPrivateKey } from "../../../Cryptography/Verify";
 import { loadPublicKey, loadPrivateKey } from "../../../../actions/SessionActions";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
