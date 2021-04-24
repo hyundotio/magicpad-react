@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import PasswordInput from "../Universal/PasswordInput";
 import TextareaInput from "../Universal/TextareaInput";
@@ -22,7 +22,22 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
   const [processedStegLink, setProcessedStegLink] = useState("#");
   const [processed, setProcessed] = useState(false);
   const [stegProcessed, setStegProcessed] = useState(false);
+  const [isWorking, setIsWorking] = useState(false);
   const pgpWebWorker = new WebWorker();
+
+  useEffect(() => {
+    return () => {
+      //If isWorking, handle specially.
+      const writePageState = {
+        signMessage: signMessage,
+        textareaValue: textareaValue,
+        stegFile: stegFile,
+        processedStegLink: processedStegLink,
+        processed: processed,
+        stegProcessed: stegProcessed
+      }
+    };
+  }, []);
 
   const handleSignOnClick = function(e: React.FormEvent<HTMLInputElement>){
     const input = e.target as HTMLInputElement;
@@ -32,6 +47,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
   async function handleEncrypt(){
     setStegProcessed(false);
     setProcessed(false);
+    setIsWorking(true);
     const processedData = (await pgpWebWorker.encryptString(textareaValue, passwordValue, signMessage,
                                                            props.loadedKeys.publicKey, props.loadedKeys.privateKey)).trim();
     if(processedData){
@@ -42,7 +58,9 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
         fileReader.onloadend = (e: Event) => fileReader.result && handleStegEncode(processedData, fileReader.result);
         fileReader.readAsDataURL(stegFile);
       }
-      stegFile ? processed && stegProcessed && props.setPopupVisibility(true) : processed && props.setPopupVisibility(true);
+      stegFile ?
+        processed && stegProcessed && props.setPopupVisibility(true) && setIsWorking(false) :
+        processed && props.setPopupVisibility(true);
     }
   }
 
@@ -67,15 +85,15 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
         <button
           disabled={
             signMessage ?
-            passwordValue.length === 0 || textareaValue.length === 0 :
-            textareaValue.length === 0
+            passwordValue.length === 0 || textareaValue.length === 0 || isWorking:
+            textareaValue.length === 0 || isWorking
           }
           onClick={handleEncrypt}
         >
           Encrypt
         </button>
         { processedStegLink !== '#' ? <a href={processedStegLink} download="steg_output.png">Download steg</a> : null}
-        <button disabled={!processed} onClick={() => props.setPopupVisibility(true)}>Open encrypted content</button>
+        <button disabled={!processed || isWorking} onClick={() => props.setPopupVisibility(true)}>Open encrypted content</button>
     </div>
   )
 }

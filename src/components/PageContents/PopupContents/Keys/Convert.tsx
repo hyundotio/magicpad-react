@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { StegInput } from "../../../../@types/StegTypes";
 import { encodeSteg, decodeSteg } from "../../../Steganography/Steg";
 import { revokeBlob, dataURItoBlobURL } from "../../../FileOutput/BlobHandler";
@@ -13,6 +13,19 @@ const PopupContentsKeysConvert : React.FunctionComponent = () => {
   const [textareaValue, setTextareaValue] = useState("");
   const [convertedKeyDownloadLink, setConvertedKeyDownloadLink] = useState("");
   const [convertedFilename, setConvertedFilename] = useState("");
+  const [isWorking, setIsWorking] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      //If isWorking, handle specially.
+      const keyConvertState = {
+        textareaValue: textareaValue,
+        convertedKeyDownloadLink: convertedKeyDownloadLink,
+        convertedFilename: convertedFilename
+      }
+    };
+  }, []);
+
   //Convert image to text
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files && e.target.files[0];
@@ -45,10 +58,12 @@ const PopupContentsKeysConvert : React.FunctionComponent = () => {
     setConvertedFilename("");
     setTextareaValue("");
     setConvertedKeyDownloadLink("#");
+    setIsWorking(false);
     revokeBlob(convertedKeyDownloadLink);
   }
 
   async function prepareSteg(img: HTMLImageElement, pgpKey: string){
+    setIsWorking(true);
     revokeBlob(convertedKeyDownloadLink);
     const keyInit = await openpgpKey.readArmored(pgpKey);
     //No types defined in the OpenPGP Type package. Perhaps PR one.
@@ -67,9 +82,11 @@ const PopupContentsKeysConvert : React.FunctionComponent = () => {
     setConvertedFilename(filename);
     setTextareaValue(pgpKey);
     setConvertedKeyDownloadLink(stegKey);
+    setIsWorking(false);
   }
 
   async function handleStegDecode(input: StegInput){
+    setIsWorking(true);
     revokeBlob(convertedKeyDownloadLink);
     const decodedKey = await decodeSteg(input);
     if(isPublicKey(decodedKey) || isPrivateKey(decodedKey)){
@@ -82,6 +99,7 @@ const PopupContentsKeysConvert : React.FunctionComponent = () => {
       setConvertedFilename(filename);
       setTextareaValue(decodedKey);
       setConvertedKeyDownloadLink(url);
+      setIsWorking(false);
     } else {
       resetState();
     }

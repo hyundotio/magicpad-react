@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { isPublicKey, isPrivateKey } from "../../../Cryptography/Verify";
 import { loadPublicKey, loadPrivateKey } from "../../../../actions/SessionActions";
 import { Dispatch } from "redux";
@@ -12,6 +12,15 @@ interface Props {
 const PopupContentsKeysPaste : React.FunctionComponent<Props> = props => {
   //Reducer, set public Key (owner);
   const [textareaValue, setTextareaValue] = useState("");
+
+  useEffect(() => {
+    return () => {
+      const keyPasteState = {
+        textareaValue: textareaValue
+      }
+    };
+  }, []);
+
   function handleOnChange(e: React.FormEvent<HTMLTextAreaElement>) {
     const input = e.target as HTMLTextAreaElement;
     setTextareaValue(input.value);

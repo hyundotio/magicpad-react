@@ -39,6 +39,22 @@ const PopupContentsKeysNewKeys : React.FunctionComponent<Props> = props => {
   const pgpWebWorker = new WebWorker();
 
   useEffect(() => {
+    return () => {
+      //If isWorking, handle specially.
+      const keyNewKeysState = {
+        nameValue: nameValue,
+        emailValue: emailValue,
+        passwordValue: passwordValue,
+        filenameValue: filenameValue,
+        downloadLinks: downloadLinks,
+        formIsReady: formIsReady,
+        keysGenerated: keysGenerated,
+        importKeyWithDownload: importKeyWithDownload
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     if(validateEmail(emailValue) && nameValue.trim().length && passwordValue.trim().length){
       setFormIsReady(true);
     } else {

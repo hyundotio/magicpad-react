@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { Dispatch } from "redux";
 import { key as openpgpKey } from "openpgp";
@@ -35,6 +35,19 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
   const privateKeyInputRef = React.useRef<HTMLInputElement | null>(null);
   const [publicKeyFingerprint, setPublicKeyFingerprint] = useState("");
   const [privateKeyFingerprint, setPrivateKeyFingerprint] = useState("");
+  const [publicKeyFilename, setPublicKeyFilename] = useState("");
+  const [privateKeyFilename, setPrivateKeyFilename] = useState("");
+
+  useEffect(() => {
+    return () => {
+      const keyPageState = {
+        publicKeyFingerprint: publicKeyFingerprint,
+        privateKeyFingerprint: privateKeyFingerprint,
+        publicKeyFilename: publicKeyFilename,
+        privateKeyFilename: privateKeyFilename
+      }
+    };
+  }, []);
 
   const openPopupClick = function(popupPage: KEYSPOPUPTYPES){
     props.setPopupPage(popupPage);

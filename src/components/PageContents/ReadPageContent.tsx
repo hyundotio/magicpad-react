@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import PasswordInput from "../Universal/PasswordInput";
 import TextareaInput from "../Universal/TextareaInput";
@@ -19,13 +19,27 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
   const [textareaValue, setTextareaValue] = useState("");
   const [verificationMessage, setVerificationMessage] = useState("");
   const [processed, setProcessed] = useState(false);
+  const [isWorking, setIsWorking] = useState(false);
   const pgpWebWorker = new WebWorker();
 
+  useEffect(() => {
+    return () => {
+      //If isWorking, handle specially.
+      const readPageState = {
+        textareaValue: textareaValue,
+        verificationMessage: verificationMessage,
+        processed: processed
+      }
+    };
+  }, []);
+
   async function handleDecrypt(){
+    setIsWorking(true);
     const processedData = await pgpWebWorker.decryptString(textareaValue, passwordValue, props.loadedKeys.publicKey, props.loadedKeys.privateKey);
     if(processedData.decryptedMessage){
       props.setProcessedContent(processedData.decryptedMessage);
       setVerificationMessage(processedData.verificationMessage);
+      setIsWorking(false);
       setProcessed(true);
       props.setPopupVisibility(true);
     }
@@ -53,7 +67,7 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
       <PasswordInput passwordValue={passwordValue} setPasswordValue={setPasswordValue} />
       <TextareaInput setTextareaValue={setTextareaValue} textareaValue={textareaValue} />
       <button
-        disabled={passwordValue.length === 0 || textareaValue.length === 0}
+        disabled={passwordValue.length === 0 || textareaValue.length === 0 || isWorking}
         onClick={handleDecrypt}
       >
         Decrypt
