@@ -27,8 +27,7 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
       //If isWorking, handle specially.
       const readPageState = {
         textareaValue: textareaValue,
-        verificationMessage: verificationMessage,
-        processed: processed
+        verificationMessage: verificationMessage
       }
     };
   }, []);

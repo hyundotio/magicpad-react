@@ -44,11 +44,8 @@ const PopupContentsKeysNewKeys : React.FunctionComponent<Props> = props => {
       const keyNewKeysState = {
         nameValue: nameValue,
         emailValue: emailValue,
-        passwordValue: passwordValue,
         filenameValue: filenameValue,
         downloadLinks: downloadLinks,
-        formIsReady: formIsReady,
-        keysGenerated: keysGenerated,
         importKeyWithDownload: importKeyWithDownload
       }
     };

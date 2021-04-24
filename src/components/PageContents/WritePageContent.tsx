@@ -31,10 +31,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
       const writePageState = {
         signMessage: signMessage,
         textareaValue: textareaValue,
-        stegFile: stegFile,
         processedStegLink: processedStegLink,
-        processed: processed,
-        stegProcessed: stegProcessed
       }
     };
   }, []);
