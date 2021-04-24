@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { AttachPageState } from "../../@types/StateTypes";
 import { ProcessedData } from "../../@types/ProcessedDataTypes";
@@ -31,17 +31,20 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
   const [fileReference, setFileReference] = useState<File | undefined>(undefined);
   const [downloadUrl, setDownloadUrl] = useState("");
   const [isWorking, setIsWorking] = useState(false);
+  const [attachFilename, setAttachFilename] = useState("");
+  const attachFileInputRef = React.useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     return () => {
       //If isWorking, handle specially.
-      const keyConvertState = {
+      const keyConvertState: AttachPageState = {
         attachType: attachType,
+        attachFilename: attachFilename,
         downloadUrl: downloadUrl
       }
       props.setAttachPageState(keyConvertState);
     };
-  },[attachType,downloadUrl]);
+  },[attachType, downloadUrl]);
 
   const handleAttachTypeOnClick = function(e: React.FormEvent<HTMLInputElement>){
     const input = e.target as HTMLInputElement;
@@ -50,8 +53,11 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
 
   const handleFileOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target as HTMLInputElement;
-    const file = input.files !== null && input.files[0];
-    file && setFileReference(file);
+    const fileReference = input.files !== null && input.files[0];
+    if(fileReference){
+      setAttachFilename(fileReference.name);
+      setFileReference(fileReference);
+    }
   }
 
   async function processDataAsync(data: ProcessedData, filename: string){
@@ -95,14 +101,15 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
 
   return (
     <div className="page-content attach-page">
-      Attach
+      Attach {attachFilename ? `- ${attachFilename}` : null}
       <form>
         Encrypt <input name="attach_type" type="radio" value="encrypt" onClick={handleAttachTypeOnClick} />
         Decrypt <input name="attach_type" type="radio" value="decrypt" onClick={handleAttachTypeOnClick} />
         {attachType === "decrypt" ? <PasswordInput passwordValue={passwordValue} setPasswordValue={setPasswordValue} /> : null}
         {attachType !== "" ? <input type="file"
-                               onChange={handleFileOnChange}
-                               disabled={attachType === ""}
+                                    ref={attachFileInputRef}
+                                    onChange={handleFileOnChange}
+                                    disabled={attachType === ""}
                              /> :
          null
         }

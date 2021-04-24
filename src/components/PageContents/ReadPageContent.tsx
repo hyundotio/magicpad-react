@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { Dispatch } from "redux";
 import PasswordInput from "../Universal/PasswordInput";
 import TextareaInput from "../Universal/TextareaInput";
 import { decodeSteg } from "../Steganography/Steg";
@@ -7,11 +8,15 @@ import { StegInput } from "../../@types/StegTypes";
 import { Keys } from "../../@types/KeysTypes";
 import WebWorker from '../../webworker';
 import { ApplicationState } from "../../Store";
+import { ReadPageState } from "../../@types/StateTypes";
+import { setReadPageState } from "../../actions/SessionActions";
 
 interface Props {
   setPopupVisibility: Function;
   setProcessedContent: Function;
   loadedKeys: Keys;
+  setReadPageState: typeof setReadPageState;
+  readPageState: ReadPageState;
 }
 
 const ReadPageContent : React.FunctionComponent<Props> = props => {
@@ -29,8 +34,9 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
         textareaValue: textareaValue,
         verificationMessage: verificationMessage
       }
+      props.setReadPageState(readPageState);
     };
-  }, []);
+  }, [textareaValue, verificationMessage]);
 
   async function handleDecrypt(){
     setIsWorking(true);
@@ -78,8 +84,14 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
 
 const mapStateToProps = (state: ApplicationState) => {
   return {
+    readPageState: state.appState.readPage,
     loadedKeys: state.appState.keys
   }
 }
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    setReadPageState: (state: ReadPageState) => dispatch(setReadPageState(state)),
+  }
+}
 
-export default connect(mapStateToProps)(ReadPageContent);
+export default connect(mapStateToProps, mapDispatchToProps)(ReadPageContent);

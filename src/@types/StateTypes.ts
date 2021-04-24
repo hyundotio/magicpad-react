@@ -20,6 +20,7 @@ export interface KeysPageState {
 
 export interface AttachPageState {
   attachType: string;
+  attachFilename: string;
   downloadUrl: string;
 }
 
@@ -44,12 +45,30 @@ export interface KeysPageNewKeysState {
 export enum MainStateActionsTypes {
   LOADPRIVATEKEY = "MAINSTATE/LOADPRIVATEKEY",
   LOADPUBLICKEY = "MAINSTATE/LOADPUBLICKEY",
-  SETATTACHPAGESTATE = "MAINSTATE/SETATTACHPAGESTATE"
+  SETATTACHPAGESTATE = "MAINSTATE/SETATTACHPAGESTATE",
+  SETWRITEPAGESTATE = "MAINSTATE/SETWRITEPAGESTATE",
+  SETREADPAGESTATE = "MAINSTATE/SETREADPAGESTATE",
+  SETKEYSPAGESTATE = "MAINSTATE/SETKEYSPAGESTATE"
 }
 
 export interface SetAttachPageState {
   type: MainStateActionsTypes.SETATTACHPAGESTATE;
   state: AttachPageState;
+}
+
+export interface SetKeysPageState {
+  type: MainStateActionsTypes.SETKEYSPAGESTATE;
+  state: KeysPageState;
+}
+
+export interface SetWritePageState {
+  type: MainStateActionsTypes.SETWRITEPAGESTATE;
+  state: WritePageState;
+}
+
+export interface SetReadPageState {
+  type: MainStateActionsTypes.SETREADPAGESTATE;
+  state: ReadPageState;
 }
 
 export interface LoadPublicKey {
@@ -62,7 +81,8 @@ export interface LoadPrivateKey {
   privateKey: string;
 }
 
-export type MainStateActions = LoadPublicKey | LoadPrivateKey | SetAttachPageState;
+export type MainStateActions = LoadPublicKey | LoadPrivateKey | SetAttachPageState |
+                               SetKeysPageState | SetWritePageState | SetReadPageState;
 
 export interface MainState {
   readonly keys: Keys;

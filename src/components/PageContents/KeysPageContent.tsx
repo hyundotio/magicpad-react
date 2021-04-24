@@ -11,10 +11,11 @@ import PasswordInput from "../Universal/PasswordInput";
 import TextareaInput from "../Universal/TextareaInput";
 import WebWorker from '../../webworker';
 
+import { KeysPageState } from "../../@types/StateTypes";
 import { KEYSPOPUPTYPES } from "../../@types/KeysPopupTypes";
 import { Keys } from "../../@types/KeysTypes";
 import { StegInput } from "../../@types/StegTypes";
-import { loadPublicKey, loadPrivateKey } from "../../actions/SessionActions";
+import { loadPublicKey, loadPrivateKey, setKeysPageState } from "../../actions/SessionActions";
 
 import { isPublicKey, isPrivateKey } from "../Cryptography/Verify";
 
@@ -23,9 +24,11 @@ import { encodeSteg, decodeSteg } from "../Steganography/Steg";
 interface Props {
   loadPublicKey: typeof loadPublicKey;
   loadPrivateKey: typeof loadPrivateKey;
+  setKeysPageState: typeof setKeysPageState;
   setPopupPage: Function;
   setPopupVisibility: Function;
   loadedKeys: Keys;
+  keysPageState: KeysPageState;
 }
 
 const KeysPageContent : React.FunctionComponent<Props> = props => {
@@ -39,27 +42,29 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
   const [privateKeyFilename, setPrivateKeyFilename] = useState("");
 
   useEffect(() => {
+    console.log(props.keysPageState);
     return () => {
-      const keyPageState = {
+      const keyPageState: KeysPageState = {
         publicKeyFingerprint: publicKeyFingerprint,
         privateKeyFingerprint: privateKeyFingerprint,
         publicKeyFilename: publicKeyFilename,
         privateKeyFilename: privateKeyFilename
       }
+      props.setKeysPageState(keyPageState);
     };
-  }, []);
+  }, [publicKeyFingerprint, privateKeyFingerprint, publicKeyFilename, privateKeyFilename]);
 
   const openPopupClick = function(popupPage: KEYSPOPUPTYPES){
     props.setPopupPage(popupPage);
     props.setPopupVisibility(true);
   }
 
-  async function handleStegDecode(input: StegInput, type: string){
+  async function handleStegDecode(input: StegInput, type: string, filename: string){
     const decodedKey = await decodeSteg(input);
-    handleKeyLoader(decodedKey, type);
+    handleKeyLoader(decodedKey, type, filename);
   }
 
-  async function handleKeyLoader(key: string, type: string){
+  async function handleKeyLoader(key: string, type: string, filename: string){
     if(isPublicKey(key) || isPrivateKey(key)){
       const initKey = await openpgpKey.readArmored(key);
       let fingerprintReadableString = '';
@@ -70,33 +75,48 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
         const fingerprintString = bufferToHex(fingerprintBuffer);
         fingerprintReadableString = styleFingerprintString(fingerprintString);
       }
-      if(type === 'public') props.loadPublicKey(key) && setPublicKeyFingerprint(fingerprintReadableString);
-      if(type === 'private') props.loadPrivateKey(key) && setPrivateKeyFingerprint(fingerprintReadableString);
+      if(type === 'public') {
+        props.loadPublicKey(key);
+        setPublicKeyFingerprint(fingerprintReadableString);
+        setPublicKeyFilename(filename);
+      } else if(type === 'private') {
+        props.loadPrivateKey(key);
+        setPrivateKeyFingerprint(fingerprintReadableString);
+        setPrivateKeyFilename(filename);
+      }
     } else {
-      resetPublicKeyInput();
+      if(type === 'public') {
+        resetPublicKeyInput();
+      } else if(type === 'private') {
+        resetPrivateKeyInput();
+      }
     }
   }
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>, type: string) => {
-    const file = e.target.files && e.target.files[0];
-    if(file){
+    const fileReference = e.target.files && e.target.files[0];
+    if(fileReference){
       const fileReader = new FileReader();
-      if(file.type.indexOf('png') !== -1){
-        fileReader.onloadend = (e: Event) => fileReader.result && handleStegDecode(fileReader.result, type);
-        fileReader.readAsDataURL(file);
+      if(fileReference.type.indexOf('png') !== -1){
+        fileReader.onloadend = (e: Event) => fileReader.result && handleStegDecode(fileReader.result, type, fileReference.name);
+        fileReader.readAsDataURL(fileReference);
       } else {
-        fileReader.onloadend = (e: Event) => fileReader.result && handleKeyLoader(fileReader.result as string, type);
-        fileReader.readAsText(file);
+        fileReader.onloadend = (e: Event) => fileReader.result && handleKeyLoader(fileReader.result as string, type, fileReference.name);
+        fileReader.readAsText(fileReference);
       }
     }
   }
 
   const resetPublicKeyInput = function(){
     if(publicKeyInputRef !== null && publicKeyInputRef.current) publicKeyInputRef.current.value = "";
+    setPublicKeyFilename("");
+    setPublicKeyFilename("");
   }
 
   const resetPrivateKeyInput = function(){
     if(privateKeyInputRef !== null && privateKeyInputRef.current) privateKeyInputRef.current.value = "";
+    setPrivateKeyFingerprint("");
+    setPrivateKeyFilename("");
   }
 
   const resetPublicKey = function(){
@@ -114,7 +134,7 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
       Keys Imports
       <form>
         <label>
-          <span>Private key</span>
+          <span>Private key {privateKeyFilename ? `- ${privateKeyFilename}` : null}</span>
           <input accept=".asc,.png"
                  type="file"
                  ref={privateKeyInputRef}
@@ -129,7 +149,7 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
       </form>
       <form>
         <label>
-          <span>Public key</span>
+          <span>Public key {publicKeyFilename ? `- ${publicKeyFilename}` : null}</span>
           <input accept=".asc,.png"
                  type="file"
                  ref={publicKeyInputRef}
@@ -154,12 +174,14 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
 
 const mapStateToProps = (state: ApplicationState) => {
   return {
+    keysPageState: state.appState.keysPage.main,
     loadedKeys: state.appState.keys
   }
 }
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
+    setKeysPageState: (state: KeysPageState) => dispatch(setKeysPageState(state)),
     loadPublicKey: (publicKey: string) => dispatch(loadPublicKey(publicKey)),
     loadPrivateKey: (privateKey: string) => dispatch(loadPrivateKey(privateKey))
   }

@@ -48,7 +48,8 @@ const InitialAppState: MainState = {
   },
   attachPage: {
     attachType: '',
-    downloadUrl: '#'
+    downloadUrl: '#',
+    attachFilename: ''
   }
 }
 
@@ -68,6 +69,21 @@ export const MainReducer: Reducer <MainState, MainStateActions> =
     case MainStateActionsTypes.SETATTACHPAGESTATE: {
       let newState = {...state};
       newState.attachPage = action.state;
+      return newState;
+    }
+    case MainStateActionsTypes.SETWRITEPAGESTATE: {
+      let newState = {...state};
+      newState.writePage = action.state;
+      return newState;
+    }
+    case MainStateActionsTypes.SETREADPAGESTATE: {
+      let newState = {...state};
+      newState.readPage = action.state;
+      return newState;
+    }
+    case MainStateActionsTypes.SETKEYSPAGESTATE: {
+      let newState = {...state};
+      newState.keysPage.main = action.state;
       return newState;
     }
     default:

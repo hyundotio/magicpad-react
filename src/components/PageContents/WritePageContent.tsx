@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { Dispatch } from "redux";
 import PasswordInput from "../Universal/PasswordInput";
 import TextareaInput from "../Universal/TextareaInput";
 import WebWorker from '../../webworker';
@@ -7,11 +8,15 @@ import { encodeSteg } from "../Steganography/Steg";
 import { StegInput } from "../../@types/StegTypes";
 import { Keys } from "../../@types/KeysTypes";
 import { ApplicationState } from "../../Store";
+import { WritePageState } from "../../@types/StateTypes";
+import { setWritePageState } from "../../actions/SessionActions";
 
 interface Props {
   setPopupVisibility: Function;
   setProcessedContent: Function;
   loadedKeys: Keys;
+  setWritePageState: typeof setWritePageState;
+  writePageState: WritePageState;
 }
 
 const WritePageContent : React.FunctionComponent<Props> = props => {
@@ -24,17 +29,19 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
   const [stegProcessed, setStegProcessed] = useState(false);
   const [isWorking, setIsWorking] = useState(false);
   const pgpWebWorker = new WebWorker();
+  const stegFileRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     return () => {
       //If isWorking, handle specially.
-      const writePageState = {
+      const writePageState: WritePageState = {
         signMessage: signMessage,
         textareaValue: textareaValue,
-        processedStegLink: processedStegLink,
+        processedStegLink: processedStegLink
       }
+      props.setWritePageState(writePageState);
     };
-  }, []);
+  }, [signMessage, textareaValue, processedStegLink]);
 
   const handleSignOnClick = function(e: React.FormEvent<HTMLInputElement>){
     const input = e.target as HTMLInputElement;
@@ -66,6 +73,11 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
     if(file) setStegFile(file);
   }
 
+  function resetSteg(){
+    if(stegFileRef !== null && stegFileRef.current) stegFileRef.current.value = "";
+    setStegFile(undefined);
+  }
+
   async function handleStegEncode(message: string, stegInput: StegInput){
     const encodedSteg = await encodeSteg(message, stegInput);
     setProcessedStegLink(encodedSteg);
@@ -75,8 +87,9 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
   return (
     <div className="page-content write-page">
         Write
-        Import steg host: <input type="file" onChange={handleOnChange} />
+        Import steg host: <input type="file" ref={stegFileRef} onChange={handleOnChange}  />
         Sign message: <input type="checkbox" onClick={handleSignOnClick} />
+        {stegFile ? <button onClick={resetSteg}>Clear steganograph host</button> : null}
         {signMessage ? <PasswordInput passwordValue={passwordValue} setPasswordValue={setPasswordValue} /> : null}
         <TextareaInput setTextareaValue={setTextareaValue} textareaValue={textareaValue} />
         <button
@@ -97,8 +110,14 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
 
 const mapStateToProps = (state: ApplicationState) => {
   return {
+    writePageState: state.appState.writePage,
     loadedKeys: state.appState.keys
   }
 }
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    setWritePageState: (state: WritePageState) => dispatch(setWritePageState(state)),
+  }
+}
 
-export default connect(mapStateToProps)(WritePageContent);
+export default connect(mapStateToProps, mapDispatchToProps)(WritePageContent);

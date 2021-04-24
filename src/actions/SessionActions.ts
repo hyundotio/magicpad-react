@@ -1,7 +1,13 @@
 import { LoadPublicKey,
          LoadPrivateKey,
          SetAttachPageState,
+         SetWritePageState,
+         SetKeysPageState,
+         SetReadPageState,
+         ReadPageState,
          AttachPageState,
+         WritePageState,
+         KeysPageState,
          MainState,
          MainStateActionsTypes } from "../@types/StateTypes";
 import { ActionCreator } from "redux";
@@ -16,10 +22,19 @@ import { ActionCreator } from "redux";
   }*/
 
 export const loadPublicKey: ActionCreator<LoadPublicKey> =
-  (publicKey: string) => ({type: MainStateActionsTypes.LOADPUBLICKEY, publicKey: publicKey})
+  (publicKey: string) => ({type: MainStateActionsTypes.LOADPUBLICKEY, publicKey: publicKey});
 
 export const loadPrivateKey: ActionCreator<LoadPrivateKey> =
-  (privateKey: string) => ({type:  MainStateActionsTypes.LOADPRIVATEKEY, privateKey: privateKey})
+  (privateKey: string) => ({type:  MainStateActionsTypes.LOADPRIVATEKEY, privateKey: privateKey});
 
 export const setAttachPageState: ActionCreator<SetAttachPageState> =
-  (state: AttachPageState) => ({type: MainStateActionsTypes.SETATTACHPAGESTATE, state: state})
+  (state: AttachPageState) => ({type: MainStateActionsTypes.SETATTACHPAGESTATE, state: state});
+
+export const setWritePageState: ActionCreator<SetWritePageState> =
+  (state: WritePageState) => ({type: MainStateActionsTypes.SETWRITEPAGESTATE, state: state});
+
+export const setKeysPageState: ActionCreator<SetKeysPageState> =
+  (state: KeysPageState) => ({type: MainStateActionsTypes.SETKEYSPAGESTATE, state: state});
+
+export const setReadPageState: ActionCreator<SetReadPageState> =
+  (state: ReadPageState) => ({type: MainStateActionsTypes.SETREADPAGESTATE, state: state});
