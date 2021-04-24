@@ -3,6 +3,12 @@ import { LoadPublicKey,
          SetAttachPageState,
          SetWritePageState,
          SetKeysPageState,
+         SetKeysPagePasteState,
+         SetKeysPageConvertState,
+         SetKeysPageNewKeysState,
+         KeysPagePasteState,
+         KeysPageConvertState,
+         KeysPageNewKeysState,
          SetReadPageState,
          ReadPageState,
          AttachPageState,
@@ -35,6 +41,15 @@ export const setWritePageState: ActionCreator<SetWritePageState> =
 
 export const setKeysPageState: ActionCreator<SetKeysPageState> =
   (state: KeysPageState) => ({type: MainStateActionsTypes.SETKEYSPAGESTATE, state: state});
+
+export const setKeysPagePasteState: ActionCreator<SetKeysPagePasteState> =
+  (state: KeysPagePasteState) => ({type: MainStateActionsTypes.SETKEYSPAGEPASTESTATE, state: state});
+
+export const setKeysPageConvertState: ActionCreator<SetKeysPageConvertState> =
+  (state: KeysPageConvertState) => ({type: MainStateActionsTypes.SETKEYSPAGECONVERTSTATE, state: state});
+
+export const setKeysPageNewKeysState: ActionCreator<SetKeysPageNewKeysState> =
+  (state: KeysPageNewKeysState) => ({type: MainStateActionsTypes.SETKEYSPAGENEWKEYSSTATE, state: state});
 
 export const setReadPageState: ActionCreator<SetReadPageState> =
   (state: ReadPageState) => ({type: MainStateActionsTypes.SETREADPAGESTATE, state: state});

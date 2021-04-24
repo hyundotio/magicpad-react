@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
 import { StegInput } from "../../../../@types/StegTypes";
 import { encodeSteg, decodeSteg } from "../../../Steganography/Steg";
 import { revokeBlob, dataURItoBlobURL } from "../../../FileOutput/BlobHandler";
@@ -7,9 +9,16 @@ import { PUBLIC_KEY_IMG_BASE } from "../../../KeyRefBase64/PublicKeyRef";
 import { PRIVATE_KEY_IMG_BASE } from "../../../KeyRefBase64/PrivateKeyRef";
 import { key as openpgpKey } from "openpgp";
 import { stringTruncator } from "../../../Universal/Helpers/StringTruncator";
+import { KeysPageConvertState } from "../../../../@types/StateTypes";
+import { ApplicationState } from "../../../../Store";
+import { setKeysPageConvertState } from "../../../../actions/SessionActions";
 
+interface Props {
+  keysPageConvertState: KeysPageConvertState;
+  setKeysPageConvertState: typeof setKeysPageConvertState;
+}
 
-const PopupContentsKeysConvert : React.FunctionComponent = () => {
+const PopupContentsKeysConvert : React.FunctionComponent<Props> = (props) => {
   const [textareaValue, setTextareaValue] = useState("");
   const [convertedKeyDownloadLink, setConvertedKeyDownloadLink] = useState("");
   const [convertedFilename, setConvertedFilename] = useState("");
@@ -18,13 +27,14 @@ const PopupContentsKeysConvert : React.FunctionComponent = () => {
   useEffect(() => {
     return () => {
       //If isWorking, handle specially.
-      const keyConvertState = {
+      const keysPageConvertState: KeysPageConvertState = {
         textareaValue: textareaValue,
         convertedKeyDownloadLink: convertedKeyDownloadLink,
         convertedFilename: convertedFilename
       }
+      props.setKeysPageConvertState(keysPageConvertState);
     };
-  }, []);
+  }, [textareaValue, convertedKeyDownloadLink, convertedFilename]);
 
   //Convert image to text
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,4 +128,16 @@ const PopupContentsKeysConvert : React.FunctionComponent = () => {
   )
 }
 
-export default PopupContentsKeysConvert;
+const mapStateToProps = (state: ApplicationState) => {
+  return {
+    keysPageConvertState: state.appState.keysPage.convert
+  }
+}
+
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    setKeysPageConvertState: (state: KeysPageConvertState) => dispatch(setKeysPageConvertState(state))
+  }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PopupContentsKeysConvert);

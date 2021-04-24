@@ -42,7 +42,6 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
   const [privateKeyFilename, setPrivateKeyFilename] = useState("");
 
   useEffect(() => {
-    console.log(props.keysPageState);
     return () => {
       const keyPageState: KeysPageState = {
         publicKeyFingerprint: publicKeyFingerprint,

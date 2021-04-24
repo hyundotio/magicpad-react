@@ -15,8 +15,13 @@ import { loadPrivateKey } from "../../../../actions/SessionActions";
 
 import { GeneratedKeys, KeyDownloadLinks } from "../../../../@types/KeysTypes";
 import { StegInput } from "../../../../@types/StegTypes";
+import { KeysPageNewKeysState } from "../../../../@types/StateTypes";
+import { ApplicationState } from "../../../../Store";
+import { setKeysPageNewKeysState } from "../../../../actions/SessionActions";
 
 interface Props {
+  setKeysPageNewKeysState: typeof setKeysPageNewKeysState;
+  keysPageNewKeysState: KeysPageNewKeysState;
   loadPrivateKey: typeof loadPrivateKey;
 }
 
@@ -41,15 +46,16 @@ const PopupContentsKeysNewKeys : React.FunctionComponent<Props> = props => {
   useEffect(() => {
     return () => {
       //If isWorking, handle specially.
-      const keyNewKeysState = {
+      const keysPageNewKeysState: KeysPageNewKeysState = {
         nameValue: nameValue,
         emailValue: emailValue,
         filenameValue: filenameValue,
         downloadLinks: downloadLinks,
         importKeyWithDownload: importKeyWithDownload
       }
+      props.setKeysPageNewKeysState(keysPageNewKeysState);
     };
-  }, []);
+  }, [nameValue, emailValue, filenameValue, downloadLinks, importKeyWithDownload]);
 
   useEffect(() => {
     if(validateEmail(emailValue) && nameValue.trim().length && passwordValue.trim().length){
@@ -150,10 +156,17 @@ const PopupContentsKeysNewKeys : React.FunctionComponent<Props> = props => {
   )
 }
 
+const mapStateToProps = (state: ApplicationState) => {
+  return {
+    keysPageNewKeysState: state.appState.keysPage.newKeys
+  }
+}
+
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
+    setKeysPageNewKeysState: (state: KeysPageNewKeysState) => dispatch(setKeysPageNewKeysState(state)),
     loadPrivateKey: (privateKey: string) => dispatch(loadPrivateKey(privateKey))
   }
 };
 
-export default connect(null, mapDispatchToProps)(PopupContentsKeysNewKeys);
+export default connect(mapStateToProps, mapDispatchToProps)(PopupContentsKeysNewKeys);

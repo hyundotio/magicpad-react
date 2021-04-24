@@ -48,7 +48,10 @@ export enum MainStateActionsTypes {
   SETATTACHPAGESTATE = "MAINSTATE/SETATTACHPAGESTATE",
   SETWRITEPAGESTATE = "MAINSTATE/SETWRITEPAGESTATE",
   SETREADPAGESTATE = "MAINSTATE/SETREADPAGESTATE",
-  SETKEYSPAGESTATE = "MAINSTATE/SETKEYSPAGESTATE"
+  SETKEYSPAGESTATE = "MAINSTATE/SETKEYSPAGESTATE",
+  SETKEYSPAGEPASTESTATE = "MAINSTATE/SETKEYSPAGEPASTESTATE",
+  SETKEYSPAGENEWKEYSSTATE = "MAINSTATE/SETKEYSPAGENEWKEYSSTATE",
+  SETKEYSPAGECONVERTSTATE = "MAINSTATE/SETKEYSPAGECONVERTSTATE"
 }
 
 export interface SetAttachPageState {
@@ -59,6 +62,21 @@ export interface SetAttachPageState {
 export interface SetKeysPageState {
   type: MainStateActionsTypes.SETKEYSPAGESTATE;
   state: KeysPageState;
+}
+
+export interface SetKeysPagePasteState {
+  type: MainStateActionsTypes.SETKEYSPAGEPASTESTATE;
+  state: KeysPagePasteState;
+}
+
+export interface SetKeysPageConvertState {
+  type: MainStateActionsTypes.SETKEYSPAGECONVERTSTATE;
+  state: KeysPageConvertState;
+}
+
+export interface SetKeysPageNewKeysState {
+  type: MainStateActionsTypes.SETKEYSPAGENEWKEYSSTATE;
+  state: KeysPageNewKeysState;
 }
 
 export interface SetWritePageState {
@@ -82,7 +100,8 @@ export interface LoadPrivateKey {
 }
 
 export type MainStateActions = LoadPublicKey | LoadPrivateKey | SetAttachPageState |
-                               SetKeysPageState | SetWritePageState | SetReadPageState;
+                               SetKeysPageState | SetWritePageState | SetReadPageState |
+                               SetKeysPagePasteState | SetKeysPageConvertState | SetKeysPageNewKeysState;
 
 export interface MainState {
   readonly keys: Keys;

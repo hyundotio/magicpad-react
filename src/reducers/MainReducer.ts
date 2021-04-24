@@ -86,6 +86,21 @@ export const MainReducer: Reducer <MainState, MainStateActions> =
       newState.keysPage.main = action.state;
       return newState;
     }
+    case MainStateActionsTypes.SETKEYSPAGEPASTESTATE: {
+      let newState = {...state};
+      newState.keysPage.paste = action.state;
+      return newState;
+    }
+    case MainStateActionsTypes.SETKEYSPAGECONVERTSTATE: {
+      let newState = {...state};
+      newState.keysPage.convert = action.state;
+      return newState;
+    }
+    case MainStateActionsTypes.SETKEYSPAGENEWKEYSSTATE: {
+      let newState = {...state};
+      newState.keysPage.newKeys = action.state;
+      return newState;
+    }
     default:
       return state
   }

@@ -3,10 +3,15 @@ import { isPublicKey, isPrivateKey } from "../../../Cryptography/Verify";
 import { loadPublicKey, loadPrivateKey } from "../../../../actions/SessionActions";
 import { Dispatch } from "redux";
 import { connect } from "react-redux";
+import { KeysPagePasteState } from "../../../../@types/StateTypes";
+import { ApplicationState } from "../../../../Store";
+import { setKeysPagePasteState } from "../../../../actions/SessionActions";
 
 interface Props {
   loadPublicKey: typeof loadPublicKey;
   loadPrivateKey: typeof loadPrivateKey;
+  keysPagePasteState: KeysPagePasteState;
+  setKeysPagePasteState: typeof setKeysPagePasteState;
 }
 
 const PopupContentsKeysPaste : React.FunctionComponent<Props> = props => {
@@ -15,16 +20,18 @@ const PopupContentsKeysPaste : React.FunctionComponent<Props> = props => {
 
   useEffect(() => {
     return () => {
-      const keyPasteState = {
+      const keysPagePasteState: KeysPagePasteState = {
         textareaValue: textareaValue
       }
+      props.setKeysPagePasteState(keysPagePasteState);
     };
-  }, []);
+  }, [textareaValue]);
 
   function handleOnChange(e: React.FormEvent<HTMLTextAreaElement>) {
     const input = e.target as HTMLTextAreaElement;
     setTextareaValue(input.value);
   }
+
   function handleImport(){
     if(isPublicKey(textareaValue)){
       props.loadPublicKey(textareaValue);
@@ -44,11 +51,18 @@ const PopupContentsKeysPaste : React.FunctionComponent<Props> = props => {
   )
 }
 
+const mapStateToProps = (state: ApplicationState) => {
+  return {
+    keysPagePasteState: state.appState.keysPage.paste
+  }
+}
+
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
+    setKeysPagePasteState: (state: KeysPagePasteState) => dispatch(setKeysPagePasteState(state)),
     loadPublicKey: (publicKey: string) => dispatch(loadPublicKey(publicKey)),
     loadPrivateKey: (privateKey: string) => dispatch(loadPrivateKey(privateKey))
   }
 };
 
-export default connect(null, mapDispatchToProps)(PopupContentsKeysPaste);
+export default connect(mapStateToProps, mapDispatchToProps)(PopupContentsKeysPaste);
