@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { connect } from "react-redux";
+import { AttachPageState } from "../../@types/StateTypes";
 import { ProcessedData } from "../../@types/ProcessedDataTypes";
+import { Dispatch } from "redux";
 import { Keys } from "../../@types/KeysTypes";
 import PasswordInput from "../Universal/PasswordInput";
 import WebWorker from '../../webworker';
@@ -8,14 +10,17 @@ import { ApplicationState } from "../../Store";
 import { revokeBlob, dataURItoBlobURL } from "../FileOutput/BlobHandler";
 import { getFilename } from "../Universal/Helpers/GetFilename";
 import { isPublicKey, isPrivateKey } from "../Cryptography/Verify";
+import { loadPublicKey, loadPrivateKey, setAttachPageState } from "../../actions/SessionActions";
 
 interface Props {
   setPopupVisibility: Function;
   setProcessedContent: Function;
   setProcessed: Function;
+  setAttachPageState: typeof setAttachPageState;
   processedContent: string;
   processed: boolean;
   loadedKeys: Keys;
+  attachPageState: AttachPageState;
   setFilename: Function;
   filename: string;
 }
@@ -34,8 +39,9 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
         attachType: attachType,
         downloadUrl: downloadUrl
       }
+      props.setAttachPageState(keyConvertState);
     };
-  }, []);
+  },[attachType,downloadUrl]);
 
   const handleAttachTypeOnClick = function(e: React.FormEvent<HTMLInputElement>){
     const input = e.target as HTMLInputElement;
@@ -122,8 +128,17 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
 
 const mapStateToProps = (state: ApplicationState) => {
   return {
-    loadedKeys: state.userKeys.keys
+    attachPageState: state.appState.attachPage,
+    loadedKeys: state.appState.keys
   }
 }
 
-export default connect(mapStateToProps)(AttachPageContent);
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    setAttachPageState: (state: AttachPageState) => dispatch(setAttachPageState(state)),
+    loadPublicKey: (publicKey: string) => dispatch(loadPublicKey(publicKey)),
+    loadPrivateKey: (privateKey: string) => dispatch(loadPrivateKey(privateKey))
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AttachPageContent);

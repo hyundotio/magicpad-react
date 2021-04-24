@@ -97,7 +97,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
 
 const mapStateToProps = (state: ApplicationState) => {
   return {
-    loadedKeys: state.userKeys.keys
+    loadedKeys: state.appState.keys
   }
 }
 

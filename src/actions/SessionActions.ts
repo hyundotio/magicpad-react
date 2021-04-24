@@ -1,4 +1,9 @@
-import { LoadPublicKey, LoadPrivateKey, Keys, KeysActionsTypes } from "../@types/KeysTypes";
+import { LoadPublicKey,
+         LoadPrivateKey,
+         SetAttachPageState,
+         AttachPageState,
+         MainState,
+         MainStateActionsTypes } from "../@types/StateTypes";
 import { ActionCreator } from "redux";
 
 /*export const loadState: ActionCreator<LoadKeys> =
@@ -11,7 +16,10 @@ import { ActionCreator } from "redux";
   }*/
 
 export const loadPublicKey: ActionCreator<LoadPublicKey> =
-  (publicKey: string) => ({type: KeysActionsTypes.LOADPUBLICKEY, publicKey: publicKey})
+  (publicKey: string) => ({type: MainStateActionsTypes.LOADPUBLICKEY, publicKey: publicKey})
 
 export const loadPrivateKey: ActionCreator<LoadPrivateKey> =
-  (privateKey: string) => ({type: KeysActionsTypes.LOADPRIVATEKEY, privateKey: privateKey})
+  (privateKey: string) => ({type:  MainStateActionsTypes.LOADPRIVATEKEY, privateKey: privateKey})
+
+export const setAttachPageState: ActionCreator<SetAttachPageState> =
+  (state: AttachPageState) => ({type: MainStateActionsTypes.SETATTACHPAGESTATE, state: state})

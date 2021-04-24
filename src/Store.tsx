@@ -1,16 +1,16 @@
 import { applyMiddleware, combineReducers, createStore, Store } from "redux";
 import thunk from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
-import { KeysState } from "./@types/KeysTypes";
-import { KeysReducer } from "./reducers/KeysReducer";
+import { MainReducer } from "./reducers/MainReducer";
+import { MainState } from "./@types/StateTypes";
 
 
 export interface ApplicationState {
-  userKeys: KeysState
+  appState: MainState
 }
 
 const rootReducer = combineReducers<ApplicationState>({
-  userKeys: KeysReducer
+  appState: MainReducer
 })
 
 export function configureStore(): Store<ApplicationState> {
