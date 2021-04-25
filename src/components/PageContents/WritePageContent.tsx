@@ -14,6 +14,8 @@ import { setWritePageState } from "../../actions/SessionActions";
 interface Props {
   setPopupVisibility: Function;
   setProcessedContent: Function;
+  setProcessedStegLink: Function;
+  processedStegLink: string;
   loadedKeys: Keys;
   setWritePageState: typeof setWritePageState;
   writePageState: WritePageState;
@@ -23,8 +25,8 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
   const [signMessage, setSignMessage] = useState(false);
   const [passwordValue, setPasswordValue] = useState("");
   const [textareaValue, setTextareaValue] = useState("");
+  const [magicPostLink, setMagicPostLink] = useState("");
   const [stegFile, setStegFile] = useState<Blob | undefined>(undefined);
-  const [processedStegLink, setProcessedStegLink] = useState("#");
   const [processed, setProcessed] = useState(false);
   const [stegProcessed, setStegProcessed] = useState(false);
   const [isWorking, setIsWorking] = useState(false);
@@ -37,15 +39,20 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
       const writePageState: WritePageState = {
         signMessage: signMessage,
         textareaValue: textareaValue,
-        processedStegLink: processedStegLink
+        processedStegLink: props.processedStegLink
       }
       props.setWritePageState(writePageState);
     };
-  }, [signMessage, textareaValue, processedStegLink]);
+  }, [signMessage, textareaValue, props]);
 
   const handleSignOnClick = function(e: React.FormEvent<HTMLInputElement>){
     const input = e.target as HTMLInputElement;
     setSignMessage(input.checked);
+  }
+
+  function generateMagicPostLink(encryptedText: string){
+    const url = `https://www.magicpost.io/post.php?to=${encodeURIComponent(props.loadedKeys.publicKeyFingerprint)}&from=${encodeURIComponent(props.loadedKeys.privateKeyFingerprint)}&msg=${encodeURIComponent(encryptedText)}`;
+    setMagicPostLink(url);
   }
 
   async function handleEncrypt(){
@@ -56,15 +63,16 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
                                                            props.loadedKeys.publicKey, props.loadedKeys.privateKey)).trim();
     if(processedData){
       props.setProcessedContent(processedData);
+      generateMagicPostLink(processedData);
       setProcessed(true);
       if(stegFile){
         const fileReader = new FileReader();
         fileReader.onloadend = (e: Event) => fileReader.result && handleStegEncode(processedData, fileReader.result);
         fileReader.readAsDataURL(stegFile);
+      } else {
+        setIsWorking(false);
+        props.setPopupVisibility(true);
       }
-      stegFile ?
-        processed && stegProcessed && props.setPopupVisibility(true) && setIsWorking(false) :
-        processed && props.setPopupVisibility(true);
     }
   }
 
@@ -80,7 +88,8 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
 
   async function handleStegEncode(message: string, stegInput: StegInput){
     const encodedSteg = await encodeSteg(message, stegInput);
-    setProcessedStegLink(encodedSteg);
+    props.setProcessedStegLink(encodedSteg);
+    setIsWorking(false);
     setStegProcessed(true);
   }
 
@@ -102,7 +111,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
         >
           Encrypt
         </button>
-        { processedStegLink !== '#' ? <a href={processedStegLink} download="steg_output.png">Download steg</a> : null}
+        <a href={magicPostLink ? magicPostLink : "https://www.magicpost.io/post.php"}>Post message to MagicPost anonymously</a>
         <button disabled={!processed || isWorking} onClick={() => props.setPopupVisibility(true)}>Open encrypted content</button>
     </div>
   )

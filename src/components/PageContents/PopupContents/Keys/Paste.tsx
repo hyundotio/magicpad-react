@@ -25,7 +25,7 @@ const PopupContentsKeysPaste : React.FunctionComponent<Props> = props => {
       }
       props.setKeysPagePasteState(keysPagePasteState);
     };
-  }, [textareaValue]);
+  }, [textareaValue, props]);
 
   function handleOnChange(e: React.FormEvent<HTMLTextAreaElement>) {
     const input = e.target as HTMLTextAreaElement;

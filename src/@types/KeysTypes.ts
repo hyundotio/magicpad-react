@@ -1,8 +1,8 @@
 export interface Keys {
   publicKey: string;
   privateKey: string;
-  publicFingerprint: string;
-  privateFingerprint: string;
+  publicKeyFingerprint: string;
+  privateKeyFingerprint: string;
 }
 
 export interface GeneratedKeys {
@@ -22,4 +22,14 @@ export interface KeyForm {
   name: string;
   email: string;
   password: string;
+}
+
+export interface PublicKeyPackage {
+  publicKey: string;
+  publicKeyFingerprint: string;
+}
+
+export interface PrivateKeyPackage {
+  privateKey: string;
+  privateKeyFingerprint: string;
 }

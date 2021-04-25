@@ -34,7 +34,7 @@ const PopupContentsKeysConvert : React.FunctionComponent<Props> = (props) => {
       }
       props.setKeysPageConvertState(keysPageConvertState);
     };
-  }, [textareaValue, convertedKeyDownloadLink, convertedFilename]);
+  }, [textareaValue, convertedKeyDownloadLink, convertedFilename, props]);
 
   //Convert image to text
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {

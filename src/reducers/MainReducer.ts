@@ -6,8 +6,8 @@ const InitialAppState: MainState = {
   keys: {
     publicKey: '',
     privateKey: '',
-    publicFingerprint: '',
-    privateFingerprint: ''
+    publicKeyFingerprint: '',
+    privateKeyFingerprint: ''
   },
   writePage: {
     signMessage: false,
@@ -59,12 +59,14 @@ export const MainReducer: Reducer <MainState, MainStateActions> =
   switch(action.type) {
     case MainStateActionsTypes.LOADPUBLICKEY: {
       let newState = {...state};
-      newState.keys.publicKey = action.publicKey;
+      newState.keys.publicKey = action.publicKeyPackage.publicKey;
+      newState.keys.publicKeyFingerprint = action.publicKeyPackage.publicKeyFingerprint;
       return newState
     }
     case MainStateActionsTypes.LOADPRIVATEKEY: {
       let newState = {...state};
-      newState.keys.privateKey = action.privateKey;
+      newState.keys.privateKey = action.privateKeyPackage.privateKey;
+      newState.keys.privateKeyFingerprint = action.privateKeyPackage.privateKeyFingerprint
       return newState;
     }
     case MainStateActionsTypes.SETATTACHPAGESTATE: {

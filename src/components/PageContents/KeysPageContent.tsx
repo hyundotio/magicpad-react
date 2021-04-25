@@ -13,7 +13,7 @@ import WebWorker from '../../webworker';
 
 import { KeysPageState } from "../../@types/StateTypes";
 import { KEYSPOPUPTYPES } from "../../@types/KeysPopupTypes";
-import { Keys } from "../../@types/KeysTypes";
+import { Keys, PrivateKeyPackage, PublicKeyPackage } from "../../@types/KeysTypes";
 import { StegInput } from "../../@types/StegTypes";
 import { loadPublicKey, loadPrivateKey, setKeysPageState } from "../../actions/SessionActions";
 
@@ -51,7 +51,7 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
       }
       props.setKeysPageState(keyPageState);
     };
-  }, [publicKeyFingerprint, privateKeyFingerprint, publicKeyFilename, privateKeyFilename]);
+  }, [publicKeyFingerprint, privateKeyFingerprint, publicKeyFilename, privateKeyFilename, props]);
 
   const openPopupClick = function(popupPage: KEYSPOPUPTYPES){
     props.setPopupPage(popupPage);
@@ -75,11 +75,11 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
         fingerprintReadableString = styleFingerprintString(fingerprintString);
       }
       if(type === 'public') {
-        props.loadPublicKey(key);
+        props.loadPublicKey({publicKey: key, publicKeyFingerprint: fingerprintReadableString});
         setPublicKeyFingerprint(fingerprintReadableString);
         setPublicKeyFilename(filename);
       } else if(type === 'private') {
-        props.loadPrivateKey(key);
+        props.loadPrivateKey({privateKey: key, privateKeyFingerprint: fingerprintReadableString});
         setPrivateKeyFingerprint(fingerprintReadableString);
         setPrivateKeyFilename(filename);
       }
@@ -181,8 +181,8 @@ const mapStateToProps = (state: ApplicationState) => {
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     setKeysPageState: (state: KeysPageState) => dispatch(setKeysPageState(state)),
-    loadPublicKey: (publicKey: string) => dispatch(loadPublicKey(publicKey)),
-    loadPrivateKey: (privateKey: string) => dispatch(loadPrivateKey(privateKey))
+    loadPublicKey: (publicKeyPackage: PublicKeyPackage) => dispatch(loadPublicKey(publicKeyPackage)),
+    loadPrivateKey: (privateKeyPackage: PrivateKeyPackage) => dispatch(loadPrivateKey(privateKeyPackage))
   }
 }
 

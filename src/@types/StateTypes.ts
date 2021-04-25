@@ -1,4 +1,4 @@
-import { Keys, KeyDownloadLinks } from "./KeysTypes";
+import { Keys, KeyDownloadLinks, PublicKeyPackage, PrivateKeyPackage } from "./KeysTypes";
 
 export interface WritePageState {
   signMessage: boolean;
@@ -92,12 +92,12 @@ export interface SetReadPageState {
 
 export interface LoadPublicKey {
   type: MainStateActionsTypes.LOADPUBLICKEY;
-  publicKey: string;
+  publicKeyPackage: PublicKeyPackage
 }
 
 export interface LoadPrivateKey {
   type: MainStateActionsTypes.LOADPRIVATEKEY;
-  privateKey: string;
+  privateKeyPackage: PrivateKeyPackage
 }
 
 export type MainStateActions = LoadPublicKey | LoadPrivateKey | SetAttachPageState |

@@ -55,7 +55,7 @@ const PopupContentsKeysNewKeys : React.FunctionComponent<Props> = props => {
       }
       props.setKeysPageNewKeysState(keysPageNewKeysState);
     };
-  }, [nameValue, emailValue, filenameValue, downloadLinks, importKeyWithDownload]);
+  }, [nameValue, emailValue, filenameValue, downloadLinks, importKeyWithDownload, props]);
 
   useEffect(() => {
     if(validateEmail(emailValue) && nameValue.trim().length && passwordValue.trim().length){

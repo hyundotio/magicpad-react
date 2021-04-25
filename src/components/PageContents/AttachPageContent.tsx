@@ -47,7 +47,7 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
       }
       props.setAttachPageState(keyConvertState);
     };
-  },[attachType, downloadUrl]);
+  },[attachType, downloadUrl, attachFilename, fileSize, props]);
 
   const handleAttachTypeOnClick = function(e: React.FormEvent<HTMLInputElement>){
     const input = e.target as HTMLInputElement;

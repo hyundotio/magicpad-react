@@ -7,6 +7,7 @@ import PopupContainerWrite from "./Popups/PopupContainerWrite";
 
 const PageWrite : React.FunctionComponent = () => {
   const [processedContent, setProcessedContent] = useState('');
+  const [processedStegLink, setProcessedStegLink] = useState("#");
   const [popupVisible, setPopupVisibility] = useState(false);
 
   return (
@@ -14,13 +15,15 @@ const PageWrite : React.FunctionComponent = () => {
       <WritePageContent
         setPopupVisibility={setPopupVisibility}
         setProcessedContent={setProcessedContent}
+        setProcessedStegLink={setProcessedStegLink}
+        processedStegLink={processedStegLink}
       />
       <Popup
        title={"Write popup"}
        visible={popupVisible}
        closePopup={() => setPopupVisibility(false)}
       >
-        <PopupContainerWrite processedContent={processedContent} />
+        <PopupContainerWrite processedContent={processedContent} processedStegLink={processedStegLink} />
       </Popup>
     </>
   )
