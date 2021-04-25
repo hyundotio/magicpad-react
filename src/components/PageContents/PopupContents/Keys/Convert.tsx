@@ -12,6 +12,7 @@ import { stringTruncator } from "../../../Universal/Helpers/StringTruncator";
 import { KeysPageConvertState } from "../../../../@types/StateTypes";
 import { ApplicationState } from "../../../../Store";
 import { setKeysPageConvertState } from "../../../../actions/SessionActions";
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 interface Props {
   keysPageConvertState: KeysPageConvertState;
@@ -124,6 +125,9 @@ const PopupContentsKeysConvert : React.FunctionComponent<Props> = (props) => {
       />
       <textarea placeholder="Import steg key to view contents as text." readOnly={true} value={textareaValue} />
       <a className={`${textareaValue.length > 1 ? 'disabled' : ''}`} href={convertedKeyDownloadLink} download={convertedFilename}>Download</a>
+      <CopyToClipboard text={textareaValue}>
+        <button>Copy</button>
+      </CopyToClipboard>
     </div>
   )
 }

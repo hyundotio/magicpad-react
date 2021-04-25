@@ -5,6 +5,13 @@ export interface Keys {
   privateKeyFingerprint: string;
 }
 
+export interface KeySearchResult {
+  name: string;
+  email: string;
+  fingerprint: string;
+  downloadLink: string;
+}
+
 export interface GeneratedKeys {
   publicKey: string;
   privateKey: string;
