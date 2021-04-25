@@ -9,6 +9,7 @@ import WebWorker from '../../webworker';
 import { ApplicationState } from "../../Store";
 import { revokeBlob, dataURItoBlobURL } from "../FileOutput/BlobHandler";
 import { getFilename } from "../Universal/Helpers/GetFilename";
+import { bytesToSize } from "../Universal/Helpers/BytesToSize";
 import { isPublicKey, isPrivateKey } from "../Cryptography/Verify";
 import { loadPublicKey, loadPrivateKey, setAttachPageState } from "../../actions/SessionActions";
 
@@ -32,6 +33,7 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
   const [downloadUrl, setDownloadUrl] = useState("");
   const [isWorking, setIsWorking] = useState(false);
   const [attachFilename, setAttachFilename] = useState("");
+  const [fileSize, setFileSize] = useState("");
   const attachFileInputRef = React.useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
@@ -40,7 +42,8 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
       const keyConvertState: AttachPageState = {
         attachType: attachType,
         attachFilename: attachFilename,
-        downloadUrl: downloadUrl
+        downloadUrl: downloadUrl,
+        fileSize: fileSize
       }
       props.setAttachPageState(keyConvertState);
     };
@@ -55,6 +58,7 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
     const input = e.target as HTMLInputElement;
     const fileReference = input.files !== null && input.files[0];
     if(fileReference){
+      setFileSize(bytesToSize(fileReference.size));
       setAttachFilename(fileReference.name);
       setFileReference(fileReference);
     }
@@ -114,6 +118,7 @@ const AttachPageContent : React.FunctionComponent<Props> = props => {
          null
         }
       </form>
+      <div>File size: {fileReference ? fileSize : 'No file selected.'}</div>
       {
         attachType ?
         <div className="attach-options">

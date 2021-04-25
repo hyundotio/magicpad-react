@@ -49,7 +49,8 @@ const InitialAppState: MainState = {
   attachPage: {
     attachType: '',
     downloadUrl: '#',
-    attachFilename: ''
+    attachFilename: '',
+    fileSize: ''
   }
 }
 

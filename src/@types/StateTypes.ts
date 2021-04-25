@@ -22,6 +22,7 @@ export interface AttachPageState {
   attachType: string;
   attachFilename: string;
   downloadUrl: string;
+  fileSize: string;
 }
 
 export interface KeysPageConvertState {
