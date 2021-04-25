@@ -36,7 +36,7 @@ const ReadPageContent : React.FunctionComponent<Props> = props => {
       }
       props.setReadPageState(readPageState);
     };
-  }, [textareaValue, verificationMessage, props]);
+  }, [textareaValue, verificationMessage]);
 
   async function handleDecrypt(){
     setIsWorking(true);

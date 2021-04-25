@@ -51,7 +51,7 @@ const KeysPageContent : React.FunctionComponent<Props> = props => {
       }
       props.setKeysPageState(keyPageState);
     };
-  }, [publicKeyFingerprint, privateKeyFingerprint, publicKeyFilename, privateKeyFilename, props]);
+  }, [publicKeyFingerprint, privateKeyFingerprint, publicKeyFilename, privateKeyFilename]);
 
   const openPopupClick = function(popupPage: KEYSPOPUPTYPES){
     props.setPopupPage(popupPage);

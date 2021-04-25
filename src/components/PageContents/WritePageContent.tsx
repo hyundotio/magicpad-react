@@ -43,7 +43,7 @@ const WritePageContent : React.FunctionComponent<Props> = props => {
       }
       props.setWritePageState(writePageState);
     };
-  }, [signMessage, textareaValue, props]);
+  }, [signMessage, textareaValue]);
 
   const handleSignOnClick = function(e: React.FormEvent<HTMLInputElement>){
     const input = e.target as HTMLInputElement;
